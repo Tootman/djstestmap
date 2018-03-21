@@ -60,3 +60,14 @@ layer.on('seedprogress', function(seedData){
 layer.on('seedend', function(seedData){
 	console.log('Cache seeding complete');
 });
+
+
+var sidebar = L.control.sidebar('sidebar', {
+	position: 'left'
+});
+
+map.addControl(sidebar);
+
+var Sidebarmarker = L.marker([51.4379409, -0.3185518]).addTo(map).on('click', function () {
+	sidebar.toggle();
+});
