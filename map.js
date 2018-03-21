@@ -1,7 +1,52 @@
+var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
+var mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w';
 
-var map = L.map('map').setView([51.4379409,-0.3185518], 14);
+var greyscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr});
+var streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+var layer  = L.tileLayer(mbUrl, {id: 'mapbox.satellite',   attribution: mbAttr});
+
+
+// var grayscale = L.tileLayer(mapboxUrl, {id: 'MapID', attribution: mapboxAttribution}),
+    // streets   = L.tileLayer(mapboxUrl, {id: 'MapID', attribution: mapboxAttribution}),
+ // layer = L.tileLayer(mbUrl,	{id: 'mapbox.satellite',  	attribution: mbAttr  });
+
+
+
+
+
+
+ var map = L.map('map', {
+ 	center: [39.73, -104.99],
+ 	zoom: 10,
+ 	layers: [layer, streets, greyscale]
+ });
+
+ var baseMaps = {
+    "Greyscale": greyscale,
+    "Streets": streets,
+    "Sattalite map": layer
+};
+
+//
+//var overlayMaps = {
+ //   "Cities": cities
+//};
+
+
+
+L.control.layers(baseMaps).addTo(map);
+
+var baseMaps = {
+	"<span style='color: gray'>Grayscale</span>": layer
+
+};
+
+
+
+/*
+var map = L.map('map').setView([51.4379409,-0.3185518], 18);
 var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w', {
-	maxZoom: 18,
+	maxZoom: 22,
 
 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 	id: 'mapbox.satellite',
@@ -9,6 +54,8 @@ var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?ac
 	useCache: true,
 	crossOrigin: true
 });
+
+*/
 
 
 
