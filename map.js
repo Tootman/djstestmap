@@ -1,7 +1,19 @@
-// 		var map = L.map('map').setView([63.41784,10.40359], 5);
-var map = L.map('map').setView([
-	51.4379409,-0.3185518], 14);
 
+var map = L.map('map').setView([51.4379409,-0.3185518], 14);
+var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w', {
+	maxZoom: 18,
+
+	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	id: 'mapbox.satellite',
+	accessToken: 'pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
+	useCache: true,
+	crossOrigin: true
+});
+
+
+
+
+/*
 var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w', {
 	maxZoom: 22,
 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -10,6 +22,9 @@ var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?ac
 	useCache: true,
 	crossOrigin: true
 });
+
+*/
+
 
 // Listen to cache hits and misses and spam the console
 // The cache hits and misses are only from this layer, not from the WMS layer.
@@ -63,17 +78,26 @@ layer.on('seedend', function(seedData){
 
 
 var sidebar = L.control.sidebar('sidebar', {
-	position: 'left'
+	position: 'left',
+	closeButton: 'true'
 });
 
 map.addControl(sidebar);
 
-var Sidebarmarker = L.marker([51.4379409, -0.3185518]).addTo(map).on('click', function () {
-	sidebar.setContent("HEllo");
-	sidebar.toggle();
-	console.log ("clicked");
+var sidebarMarker = L.marker([51.4379409, -0.3185518],
+	{title:'My only marker'}
+	).addTo(map).on('click', function () {
+		sidebar.setContent("HEllo " + sidebarMarker.options.title);
+		sidebar.toggle();
+		console.log ("clicked");
 
-});
+	});
 
+	var sidebarMarker2 = L.marker([51.4389529, -0.3195528],
+		{title:'marker2'}
+		).addTo(map).on('click', function () {
+			sidebar.setContent("HEllo " + sidebarMarker2.options.title);
+			sidebar.toggle();
+			console.log ("clicked");
 
-
+		});
