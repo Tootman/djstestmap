@@ -69,5 +69,11 @@ var sidebar = L.control.sidebar('sidebar', {
 map.addControl(sidebar);
 
 var Sidebarmarker = L.marker([51.4379409, -0.3185518]).addTo(map).on('click', function () {
+	sidebar.setContent("HEllo");
 	sidebar.toggle();
+	console.log ("clicked");
+
 });
+
+
+
