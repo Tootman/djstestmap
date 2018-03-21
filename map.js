@@ -5,43 +5,32 @@ var greyscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr});
 var streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
 var layer  = L.tileLayer(mbUrl, {id: 'mapbox.satellite',   attribution: mbAttr});
 
+var myLayerGroup = L.layerGroup();
 
-// var grayscale = L.tileLayer(mapboxUrl, {id: 'MapID', attribution: mapboxAttribution}),
-    // streets   = L.tileLayer(mapboxUrl, {id: 'MapID', attribution: mapboxAttribution}),
- // layer = L.tileLayer(mbUrl,	{id: 'mapbox.satellite',  	attribution: mbAttr  });
+var map = L.map('map', {
+	center: [51.4379409, -0.3185518],
+	zoom: 20,
+	layers: [layer, streets, greyscale]
+});
 
-
-
-
-
-
- var map = L.map('map', {
- 	center: [39.73, -104.99],
- 	zoom: 10,
- 	layers: [layer, streets, greyscale]
- });
-
- var baseMaps = {
-    "Greyscale": greyscale,
-    "Streets": streets,
-    "Sattalite map": layer
+var baseMaps = {
+	"Greyscale": greyscale,
+	"Streets": streets,
+	"Satallite map": layer
 };
 
-//
-//var overlayMaps = {
- //   "Cities": cities
-//};
+
+var overlayMaps = {
+	"My Features": myLayerGroup
+};
 
 
-
-L.control.layers(baseMaps).addTo(map);
+L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 var baseMaps = {
 	"<span style='color: gray'>Grayscale</span>": layer
 
 };
-
-
 
 /*
 var map = L.map('map').setView([51.4379409,-0.3185518], 18);
@@ -56,9 +45,6 @@ var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?ac
 });
 
 */
-
-
-
 
 /*
 var layer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w', {
@@ -108,7 +94,6 @@ var lc = L.control.locate({
 }).addTo(map);
 
 
-
 // Seed the base layer, for the whole world, for zoom levels 0 through 4.
 function seed() {
 	var bbox = L.latLngBounds(L.latLng(-85,-180), L.latLng(85,180));
@@ -132,18 +117,18 @@ var sidebar = L.control.sidebar('sidebar', {
 map.addControl(sidebar);
 
 var sidebarMarker = L.marker([51.4379409, -0.3185518],
-	{title:'My only marker'}
-	).addTo(map).on('click', function () {
-		sidebar.setContent("HEllo " + sidebarMarker.options.title);
+	{title:'Litter Bin'}
+	).addTo(myLayerGroup).on('click', function () {
+		sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title );
 		sidebar.toggle();
 		console.log ("clicked");
 
 	});
 
 	var sidebarMarker2 = L.marker([51.4389529, -0.3195528],
-		{title:'marker2'}
-		).addTo(map).on('click', function () {
-			sidebar.setContent("HEllo " + sidebarMarker2.options.title);
+		{title:'Bench'}
+		).addTo(myLayerGroup).on('click', function () {
+			sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
 			sidebar.toggle();
 			console.log ("clicked");
 

@@ -86,14 +86,14 @@
     width: 31px;
     height: 31px;
     color: #333;
-    font-size: 25px;
+    font-size: 4em;
     line-height: 1em;
     text-align: center;
     background: white;
     -webkit-border-radius: 16px;
     border-radius: 16px;
     cursor: pointer;
-    z-index: 8; }
+    z-index: 900; }
 
 .leaflet-left {
   transition: left 0.5s; }
