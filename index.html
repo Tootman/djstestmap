@@ -1,50 +1,142 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Leaflet PouchDB Tiles example</title>
-	<meta charset="utf-8" />
 
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
-	integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
-	<link rel="stylesheet" href="css/L.Control.Sidebar.css" />
-
-	<style>
-	
-	body {
-		padding: 0;
-		margin: 0;
-	}
-
-	html, body, #map {
-		height: 100%;
-		width: 100vw;
-	}
+<style>
+#mapid {
+    height: 800px;
 }
-html, body, #map {
-	height: 100%;
-	width: 100vw;
+
+.custom-control, .custom-control2 {
+   width:200px;
+   height:40px;
+   font-size:2em;
+   margin:auto;
+   text-align:center;
+   background-color: brown;
+   color:white;
 }
+
+.custom-control::before,
+.custom-control2::before
+ {
+    content:'Click me!';
+}
+
+.custom-control:hover,
+.custom-control2:hover
+{
+    background-color:red;
+}
+
 </style>
+
+<head>
+    <title>Leaflet PouchDB Tiles example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="css/L.Control.Sidebar.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+body {
+        padding: 0;
+        margin: 0;
+    }
+
+    html,
+    body,
+    #map {
+        height: 100%;
+        width: 100vw;
+    }
+}
+html,
+body,
+#map {
+    height: 100%;
+    width: 100vw;
+}
+    </style>
 </head>
+
 <body>
-	<div id="map"></div>
-	<div id="sidebar">
-		<h1>leaflet-sidebar</h1>
-	</div>
+    <div id="map"></div>
+    <div id="sidebar">
+        <h1>leaflet-sidebar</h1>
+    </div>
 
-	<!-- <button onclick="seed()">Seed world from Z=0 until Z=4</div> -->
+    <!-- <button onclick="seed()">Seed world from Z=0 until Z=4</div> -->
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+    <script src="https://unpkg.com/pouchdb@^5.0.0/dist/pouchdb.js"></script>
+    <script src="L.TileLayer.PouchDBCached.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="js/L.Control.Sidebar.js"></script>
+    <script src="map.js"></script>
 
-		<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
-		integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
-		crossorigin=""></script>
-		<script src="https://unpkg.com/pouchdb@^5.0.0/dist/pouchdb.js"></script>	
-		<script src="L.TileLayer.PouchDBCached.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
-		<script src="js/L.Control.Sidebar.js"></script>
-		<script src="map.js"></script>
+    <script>
+    	/*
+    	window.onload = function() {
 
-	</body>
-	</html>
+    var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
+        //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
+
+        //sidebar.setContent(document.querySelector("test-div").innerHTML);
+        console.log(document.querySelector("test-div").innerHTML);
+        sidebar.toggle();
+        console.log("clicked marker");
+
+    });
+
+    var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
+        sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
+        sidebar.toggle();
+        console.log("clicked marker2");
+
+    });
+
+};
+*/
+    </script>
+
+<template id="test-div">
+	<form>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Asset name</label>
+    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Litter Bin">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Instructions</label>
+    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Repaint if necessary">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlSelect1">Asset condition</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>n/a)</option>
+    </select>
+  </div>
+ 
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Notes and comments</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1"> missing a bolt </textarea>
+  </div>
+</form>
+<button type="submit" class="btn btn-primary">Job done</button>
+</template>
+
+
+
+
+</body>
+
+
+
+
+</html>
