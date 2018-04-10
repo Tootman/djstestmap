@@ -139,6 +139,26 @@ var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addT
 
 // };
 
+L.Control.watermark  = L.Control.extend({
+    onAdd: function(map) {
+        const watermark = L.DomUtil.create('IMG', 'custom-control');
+        watermark.src = 'ORCL-logo-cropped.png';
+        watermark.style.opacity =0.3;
+        watermark.style.background="none";
+        // watermark.style.width = '200px';
+        return watermark;
+    },
+    onRemove: function(map) {
+        // Nothing to do here
+    }
+});
+L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
+L.control.watermark({ position: 'bottomright' }).addTo(map);
+
+L.control.scale().addTo(map);
+
+
+
 
 L.Control.myControl = L.Control.extend({
     onAdd: function(map) {
@@ -158,22 +178,3 @@ L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
 L.control.myControl({ position: 'bottomright' }).addTo(map);
 
 
-L.Control.watermark  = L.Control.extend({
-    onAdd: function(map) {
-        const watermark = L.DomUtil.create('IMG', 'custom-control');
-        watermark.src = 'ORCL-logo-cropped.png';
-        watermark.style.opacity =0.3;
-        watermark.style.background="none";
-
-        // watermark.style.width = '200px';
-        return watermark;
-    },
-
-    onRemove: function(map) {
-        // Nothing to do here
-    }
-});
-L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
-L.control.watermark({ position: 'bottomleft' }).addTo(map);
-
-L.control.scale().addTo(map);
