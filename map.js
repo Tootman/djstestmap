@@ -1,15 +1,16 @@
 var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 var mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w';
 
-var greyscale = L.tileLayer(mbUrl, { id: 'mapbox.light', attribution: mbAttr });
-var streets = L.tileLayer(mbUrl, { id: 'mapbox.streets', attribution: mbAttr });
-var layer = L.tileLayer(mbUrl, { id: 'mapbox.satellite', attribution: mbAttr });
+var greyscale = L.tileLayer(mbUrl, { id: 'mapbox.light', attribution: mbAttr, maxZoom:22 });
+var streets = L.tileLayer(mbUrl, { id: 'mapbox.streets', attribution: mbAttr, maxZoom:22 });
+var layer = L.tileLayer(mbUrl, { id: 'mapbox.satellite', attribution: mbAttr, maxZoom:22 });
 
 var myLayerGroup = L.layerGroup();
 
 var map = L.map('map', {
     center: [51.4379409, -0.3185518],
     zoom: 20,
+    maxZoom:22,
     layers: [layer, streets, greyscale]
 });
 
@@ -141,8 +142,6 @@ var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addT
 
 L.Control.myControl = L.Control.extend({
     onAdd: function(map) {
-
-        
         const myControl_div = L.DomUtil.create('div', 'custom-control');
          myControl_div.onclick = function(){
          	console.log("custom control clicked!");
@@ -150,12 +149,31 @@ L.Control.myControl = L.Control.extend({
          }
         return myControl_div;
     },
-
     onRemove: function(map) {
         // Nothing to do here
     }
-
 });
 
 L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
 L.control.myControl({ position: 'bottomright' }).addTo(map);
+
+
+L.Control.watermark  = L.Control.extend({
+    onAdd: function(map) {
+        const watermark = L.DomUtil.create('IMG', 'custom-control');
+        watermark.src = 'ORCL-logo-cropped.png';
+        watermark.style.opacity =0.3;
+        watermark.style.background="none";
+
+        // watermark.style.width = '200px';
+        return watermark;
+    },
+
+    onRemove: function(map) {
+        // Nothing to do here
+    }
+});
+L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
+L.control.watermark({ position: 'bottomleft' }).addTo(map);
+
+L.control.scale().addTo(map);
