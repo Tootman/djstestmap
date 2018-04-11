@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html>
-
 <style>
 #mapid {
-    height: 800px;
+    height: 400px;
 }
 
-.custom-control, .custom-control2 {
-   width:150px;
-   height:30px;
-   font-size:1.5em;
-   margin:auto;
-   text-align:center;
-   background-color: brown;
-   color:white;
+.custom-control,
+.custom-control2 {
+    width: 150px;
+    height: 30px;
+    font-size: 1.5em;
+    margin: auto;
+    text-align: center;
+    background-color: brown;
+    color: white;
 }
 
 .custom-control::before,
-.custom-control2::before
- {
-    content:'Settings';
+.custom-control2::before {
+    content: 'Settings';
 }
 
 .custom-control:hover,
-.custom-control2:hover
-{
-    background-color:#ea3737; /* dark red */
+.custom-control2:hover {
+    background-color: #ea3737;
+    /* dark red */
 }
-
 </style>
 
 <head>
@@ -55,17 +53,55 @@ body {
 html,
 body,
 #map {
-    height: 100%;
+    /* height: 100%; */
     width: 100vw;
 }
     </style>
 </head>
 
 <body>
-    <div id="map"></div>
-    <div id="sidebar">
-        <h1>leaflet-sidebar</h1>
-    </div>
+    
+        <div id="map"></div>
+        <div id="sidebar">
+            <h1>leaflet-sidebar</h1>
+           
+        </div>
+     
+
+   bind before: <span data-bind="text: App.selectedFeature.asset"></span>
+
+   <template id="test-div">
+        bind: <span data-bind="text: App.selectedFeature.asset"></span>
+        <form>
+            <div class="form-group">
+                <label for="exampleFormControlInput1" data-bind="text: asset" >Asset name</label>
+               
+                <input type="text" data-bind="value: asset" class="form-control" id="exampleFormControlInput1" placeholder="Litter Bin">
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Instructions</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Repaint if necessary">
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Asset condition</label>
+                <select class="form-control" id="exampleFormControlSelect1">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>n/a)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Notes and comments</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1"> missing a bolt </textarea>
+            </div>
+        </form>
+        <button type="submit" class="btn btn-primary">Job done</button>
+    </template>
+    bind after: <span data-bind="text: App.selectedFeature.asset"></span>
 
     <!-- <button onclick="seed()">Seed world from Z=0 until Z=4</div> -->
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
@@ -73,70 +109,34 @@ body,
     <script src="L.TileLayer.PouchDBCached.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="js/L.Control.Sidebar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+   
     <script src="map.js"></script>
-
     <script>
-    	/*
-    	window.onload = function() {
+    /*
+          window.onload = function() {
 
-    var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
-        //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
+        var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
+            //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
 
-        //sidebar.setContent(document.querySelector("test-div").innerHTML);
-        console.log(document.querySelector("test-div").innerHTML);
-        sidebar.toggle();
-        console.log("clicked marker");
+            //sidebar.setContent(document.querySelector("test-div").innerHTML);
+            console.log(document.querySelector("test-div").innerHTML);
+            sidebar.toggle();
+            console.log("clicked marker");
 
-    });
+        });
 
-    var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
-        sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
-        sidebar.toggle();
-        console.log("clicked marker2");
+        var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
+            sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
+            sidebar.toggle();
+            console.log("clicked marker2");
 
-    });
+        });
 
-};
-*/
+    };
+    */
     </script>
-
-<template id="test-div">
-	<form>
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Asset name</label>
-    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Litter Bin">
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Instructions</label>
-    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Repaint if necessary">
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlSelect1">Asset condition</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-      <option>6</option>
-      <option>n/a)</option>
-    </select>
-  </div>
  
-  <div class="form-group">
-    <label for="exampleFormControlTextarea1">Notes and comments</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1"> missing a bolt </textarea>
-  </div>
-</form>
-<button type="submit" class="btn btn-primary">Job done</button>
-</template>
-
-
-
-
 </body>
-
-
-
 
 </html>
