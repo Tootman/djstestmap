@@ -2,7 +2,7 @@
 <html>
 <style>
 #mapid {
-    height: 400px;
+    height: 800px;
 }
 
 .custom-control,
@@ -104,9 +104,7 @@ body,
     */
     </script>
 
-      bind before: <span data-bind="text: App.selectedFeature.asset"></span>
-
-   <div id="test-div">
+         <template id="test-div">
         bind: <span data-bind="text: App.selectedFeature.asset"></span>
         <form>
             <div class="form-group">
@@ -136,8 +134,8 @@ body,
             </div>
         </form>
         <button type="submit" class="btn btn-primary">Job done</button>
-    </div>
-    bind after: <span data-bind="text: App.selectedFeature.asset"></span>
+    </template>
+    
  
 </body>
 
