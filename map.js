@@ -7,6 +7,9 @@
 //
 //
 var App = {}; // wrapper namespace with knockout (ko) observables
+
+/*
+// knockout stuff - but didnt work inside <template>
 App.selectedFeature  = {
     asset: ko.observable(),
     description: ko.observable(),
@@ -14,8 +17,8 @@ App.selectedFeature  = {
     instructions: ko.observable(),
     jobDone: ko.observable()
 };
-
 ko.applyBindings(App);
+*/
 
 App.mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 App.mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w';
@@ -29,8 +32,8 @@ App.myLayerGroup = L.layerGroup();
 
 // create map with 3 layers
 App.map = L.map('map', {
-    center: [51.4379409, -0.3185518],
-    zoom: 20,
+    center: [51.4384332, -0.3147865],
+    zoom: 18,
     maxZoom: 22,
     layers: [App.satLayer, App.streetsLayer, App.greyscaleLayer]
 });
@@ -44,7 +47,7 @@ App.baseMaps = {
 
 // group of overlay layers
 App.overlayMaps = {
-    "My Features": App.myLayerGroup
+    "Ham Green": App.myLayerGroup
 };
 
 // Add the layers control
@@ -89,7 +92,11 @@ fetch('ham-green-demo.json')
                         layer.on('click', function() {
                             whenGeoFeatureClicked(feature);
                             //App.selectedFeature (feature); // ie sent to object that is watched by knockout
-                            App.selectedFeature.asset(feature.properties.Asset);
+                            document.getElementById('form-asset').value = feature.properties.Asset;
+                            document.getElementById('form-description').value = feature.properties.description;
+                            document.getElementById('form-instructions').value = feature.properties.instructions;
+                            document.getElementById('form-condition').value = feature.properties.condition;
+                            document.getElementById('form-height').value = feature.properties.height;
                             console.log("clicked: " + feature.properties.Asset);
                         });
                     }
@@ -107,6 +114,13 @@ fetch('ham-green-demo.json')
 console.log("final data val: " + data);
 console.log("App.myData: " + App.geoData);
 
+
+function onMapClick(e) {
+    console.log("map clicked at: " + e.latlng.toString());
+    App.sidebar.hide();
+};
+
+App.map.on('click', onMapClick);
 
 
 /*
@@ -172,7 +186,7 @@ App.wmsLayer = L.tileLayer.wms("http://mesonet.agron.iastate.edu/cgi-bin/wms/nex
 App.lc = L.control.locate({
     position: 'topright',
     strings: {
-        title: "Show me where I am, yo!"
+        title: "My location (will use GPS if available)"
     }
 }).addTo(App.map);
 
@@ -253,7 +267,12 @@ L.Control.myControl = L.Control.extend({
 });
 
 L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
-L.control.myControl({ position: 'bottomright' }).addTo(App.map);
+L.control.myControl({
+    position: 'bottomright',
+    strings: {
+        title: "App settings - maybe open a drawer"
+    }
+}).addTo(App.map);
 
 function initGeoLayers() {
     console.log("initGeoLayers called");
@@ -261,16 +280,15 @@ function initGeoLayers() {
 
 function whenGeoFeatureClicked(feature) {
     App.sidebar.setContent(document.getElementById("test-div").innerHTML);
-    App.sidebar.toggle();
+    App.sidebar.show();
 }
 
 
 // --------------------------------------------- helpers ------
 
 
-
-
 /*
+// redundent due to es6 fetch?
 function loadJSON(path, success, error)
 {
     let xhr = new XMLHttpRequest();

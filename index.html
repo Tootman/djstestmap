@@ -46,15 +46,15 @@ body {
     html,
     body,
     #map {
-        height: 500px;
-        width: 100vw;
+        height: 100%;
+        width: 100%;
     }
 }
 html,
 body,
 #map {
     /* height: 100%; */
-    width: 100vw;
+    width: 100%;
 }
     </style>
 </head>
@@ -76,7 +76,7 @@ body,
     <script src="L.TileLayer.PouchDBCached.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="js/L.Control.Sidebar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script> -->
    
     <script src="map.js"></script>
     <script>
@@ -108,33 +108,43 @@ body,
         bind: <span data-bind="text: App.selectedFeature.asset"></span>
         <form>
             <div class="form-group">
-                <label for="exampleFormControlInput1" data-bind="text: asset" >Asset name</label>
+                <label for="exampleFormControlInput1" >Asset name</label>
                
-                <input type="text" data-bind="value: asset" class="form-control" id="exampleFormControlInput1" placeholder="Litter Bin">
+                <input type="text"  class="form-control" id="form-asset" placeholder="Litter Bin">
+            </div>
+             <div class="form-group">
+                <label for="exampleFormControlInput1" >Description</label>
+               
+                <input type="text"  class="form-control" id="form-description" placeholder=" description goes here">
             </div>
             <div class="form-group">
                 <label for="exampleFormControlInput1">Instructions</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Repaint if necessary">
+                <input type="text" class="form-control" id="form-instructions" placeholder="Instructions go here">
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlInput1">height</label>
+                <input type="text" class="form-control" id="form-height" placeholder="approx height in meters">
             </div>
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Asset condition</label>
-                <select class="form-control" id="exampleFormControlSelect1">
+                <select class="form-control" id="form-condition">
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
                     <option>4</option>
                     <option>5</option>
                     <option>6</option>
-                    <option>n/a)</option>
+                    <option>n/a</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Notes and comments</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1"> missing a bolt </textarea>
+                <label for="exampleFormControlTextarea1">Observations</label>
+                <textarea class="form-control" id="form-observations"> eg missing a bolt </textarea>
             </div>
         </form>
         <button type="submit" class="btn btn-primary">Job done</button>
     </template>
+
     
  
 </body>
