@@ -30,6 +30,8 @@ App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App
 App.myLayerGroup = L.layerGroup();
 
 
+
+
 // create map with 3 layers
 App.map = L.map('map', {
     center: [51.4384332, -0.3147865],
@@ -52,6 +54,7 @@ App.overlayMaps = {
 
 // Add the layers control
 L.control.layers(App.baseMaps, App.overlayMaps).addTo(App.map);
+
 
 
 // -----------------------------
@@ -85,21 +88,40 @@ fetch('ham-green-demo.json')
                 App.geoData = data;
                 console.log("App.myData inside func: " + App.geoData);
                 App.geoLayer = L.geoJson(data, {
-
                     onEachFeature: function(feature, layer) {
                         console.log(feature.properties.Asset);
+                        console.log("clicked: " + feature.properties.Asset);
+
+
 
                         layer.on('click', function() {
-                            whenGeoFeatureClicked(feature);
+                            whenGeoFeatureClicked(feature, layer);
                             //App.selectedFeature (feature); // ie sent to object that is watched by knockout
                             document.getElementById('form-asset').value = feature.properties.Asset;
                             document.getElementById('form-description').value = feature.properties.description;
                             document.getElementById('form-instructions').value = feature.properties.instructions;
                             document.getElementById('form-condition').value = feature.properties.condition;
                             document.getElementById('form-height').value = feature.properties.height;
-                            console.log("clicked: " + feature.properties.Asset);
+                            document.getElementById('task-completed').checked = feature.properties.taskCompleted;
+
+                        });
+                        if (feature.properties && feature.properties.Asset) {
+                            layer.bindPopup("Selected");
+                        }
+
+                    },
+
+                    pointToLayer: function(feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: "red",
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 1
                         });
                     }
+
                 });
                 App.map.addLayer(App.geoLayer);
                 App.myLayerGroup.addLayer(App.geoLayer);
@@ -278,12 +300,25 @@ function initGeoLayers() {
     console.log("initGeoLayers called");
 }
 
-function whenGeoFeatureClicked(feature) {
+function whenGeoFeatureClicked(feature, layer) {
+    App.selectedFeature = feature;
+    App.selectedLayer - layer;
     App.sidebar.setContent(document.getElementById("test-div").innerHTML);
     App.sidebar.show();
+    layer.setStyle({ fillColor: 'blue' })
 }
 
+function appSubmitForm() {
+    console.log("feature: " + App.selectedFeature.properties.Asset);
+    App.selectedFeature.properties.Asset = document.getElementById('form-asset').value
+    App.selectedFeature.properties.description = document.getElementById('form-description').value;
+    App.selectedFeature.properties.instructions = document.getElementById('form-instructions').value;
+    App.selectedFeature.properties.condition = document.getElementById('form-condition').value;
+    App.selectedFeature.properties.height = document.getElementById('form-height').value;
+    App.selectedFeature.properties.taskCompleted = document.getElementById('task-completed').checked;
+    App.sidebar.hide();
 
+}
 // --------------------------------------------- helpers ------
 
 
