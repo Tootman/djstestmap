@@ -1,6 +1,7 @@
 "use strict";
 
-// Overview: when a feature on the geo layer is clicked it's feature object is copied to 'selectedFeature', which is watched by knowckout,
+// Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
+//  which is watched by knowckout,
 // and binded to elements on the flyout form
 //
 //
@@ -91,9 +92,6 @@ fetch('ham-green-demo.json')
                     onEachFeature: function(feature, layer) {
                         console.log(feature.properties.Asset);
                         console.log("clicked: " + feature.properties.Asset);
-
-
-
                         layer.on('click', function() {
                             whenGeoFeatureClicked(feature, layer);
                             //App.selectedFeature (feature); // ie sent to object that is watched by knockout
@@ -103,25 +101,23 @@ fetch('ham-green-demo.json')
                             document.getElementById('form-condition').value = feature.properties.condition;
                             document.getElementById('form-height').value = feature.properties.height;
                             document.getElementById('task-completed').checked = feature.properties.taskCompleted;
-
                         });
                         if (feature.properties && feature.properties.Asset) {
-                            layer.bindPopup("Selected");
+                            layer.bindPopup(feature.properties.Asset);
                         }
-
                     },
-
                     pointToLayer: function(feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 8,
                             fillColor: "red",
-                            color: "#000",
+                            color: "yellow",
+                            stroke: false,
                             weight: 1,
                             opacity: 1,
+                            weight: 4,
                             fillOpacity: 1
                         });
                     }
-
                 });
                 App.map.addLayer(App.geoLayer);
                 App.myLayerGroup.addLayer(App.geoLayer);
@@ -143,6 +139,8 @@ function onMapClick(e) {
 };
 
 App.map.on('click', onMapClick);
+
+
 
 
 /*
@@ -232,9 +230,17 @@ layer.on('seedend', function(seedData) {
 // sidebar plugin
 App.sidebar = L.control.sidebar('sidebar', {
     position: 'left',
-    closeButton: 'true'
+    closeButton: 'true',
+    autoPan: false
 });
 App.map.addControl(App.sidebar);
+
+/*
+doesn seem to work when toggled offscreen
+App.sidebar.on('hidden', function () {
+    console.log('Sidebar is now hidden.');
+});
+*/
 
 // window.onload = function() {
 
@@ -302,10 +308,11 @@ function initGeoLayers() {
 
 function whenGeoFeatureClicked(feature, layer) {
     App.selectedFeature = feature;
-    App.selectedLayer - layer;
+    App.selectedLayer = layer;
     App.sidebar.setContent(document.getElementById("test-div").innerHTML);
     App.sidebar.show();
-    layer.setStyle({ fillColor: 'blue' })
+    console.log("layer: " + layer);
+
 }
 
 function appSubmitForm() {
@@ -317,8 +324,24 @@ function appSubmitForm() {
     App.selectedFeature.properties.height = document.getElementById('form-height').value;
     App.selectedFeature.properties.taskCompleted = document.getElementById('task-completed').checked;
     App.sidebar.hide();
-
+    if (App.selectedFeature.properties.taskCompleted === true) {
+        App.selectedLayer.setStyle({ fillColor: "grey" })
+        console.log("true!")
+    } else {
+        App.selectedLayer.setStyle({ fillColor: "red" })
+        console.log("false!")
+    }
+    App.map.closePopup();
+    App.selectedFeature = null;
+    //App.selectedLayer.setStyle({ stroke: false })
 }
+
+
+App.map.on('popupclose', function(e) {
+    App.sidebar.hide();
+    App.selectedFeature = null;
+});
+
 // --------------------------------------------- helpers ------
 
 
