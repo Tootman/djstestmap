@@ -15,7 +15,7 @@ var App = {
     },
     whenGeoFeatureClicked: function() {
         let p = App.selectedFeature.properties;
-        App.sidebar.setContent(document.getElementById("test-div").innerHTML);
+        App.sidebar.setContent(document.getElementById("form-template").innerHTML);
         document.getElementById('form-asset').value = p.Asset;
         document.getElementById('form-description').value = p.description;
         document.getElementById('form-instructions').value = p.instructions;
@@ -52,8 +52,6 @@ var App = {
                             response.status);
                         return;
                     }
-                    // Examine the text in the response
-                    // access data eg App.geoData.features[5].properties.Asset
                     response.json().then(function(data) {
                         App.setupGeoLayer(data);
                         console.log("fetch called!");
@@ -180,7 +178,10 @@ L.Control.myControl = L.Control.extend({
         const myControl_div = L.DomUtil.create('div', 'custom-control');
         myControl_div.onclick = function() {
             console.log("custom control clicked!");
-            alert("Load Shapefile or do something else");
+            App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
+            App.sidebar.show();
+            //alert("Load Shapefile or do something else");
+
         }
         return myControl_div;
     }
@@ -195,7 +196,7 @@ L.control.myControl({
 App.map.on('click', onMapClick);
 
 function onMapClick(e) {
-    App.sidebar.hide();
+    //App.sidebar.hide();
     console.log(e);
 };
 

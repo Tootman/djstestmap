@@ -26,6 +26,45 @@
     background-color: #ea3737;
     /* dark red */
 }
+
+
+
+#submit-form{
+    float:right;
+}
+
+#task-completed input {
+    width: 1em;
+    height: 1em;
+    position: relative;
+}
+
+label#task-completed {
+    font-size: 1.5em;
+    margin-left:1em;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html,
+body,
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+
+}
+html,
+body,
+#map {
+    /* height: 100%; */
+
+    width: 100%;
+}
 </style>
 
 <head>
@@ -37,27 +76,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="css/L.Control.Sidebar.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style>
-body {
-        padding: 0;
-        margin: 0;
-    }
-
-    html,
-    body,
-    #map {
-        height: 100%;
-        width: 100%;
-    }
-}
-html,
-body,
-#map {
-    /* height: 100%; */
-
-    width: 100%;
-}
-    </style>
 </head>
 
 <body>
@@ -75,30 +93,31 @@ body,
     <script src="map.js"></script>
     <script>
     /*
-              window.onload = function() {
+                  window.onload = function() {
 
-            var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
-                //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
+                var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
+                    //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
 
-                //sidebar.setContent(document.querySelector("test-div").innerHTML);
-                console.log(document.querySelector("test-div").innerHTML);
-                sidebar.toggle();
-                console.log("clicked marker");
+                    //sidebar.setContent(document.querySelector("test-div").innerHTML);
+                    console.log(document.querySelector("test-div").innerHTML);
+                    sidebar.toggle();
+                    console.log("clicked marker");
 
-            });
+                });
 
-            var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
-                sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
-                sidebar.toggle();
-                console.log("clicked marker2");
+                var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
+                    sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
+                    sidebar.toggle();
+                    console.log("clicked marker2");
 
-            });
+                });
 
-        };
-        */
+            };
+            */
     </script>
-    <template id="test-div">
-        bind: <span data-bind="text: App.selectedFeature.asset"></span>
+    <template id="form-template">
+        <h2>Feature edit form </h2>
+        <span data-bind="text: App.selectedFeature.asset"></span>
         <form>
             <div class="form-group">
                 <label for="exampleFormControlInput1">Asset name</label>
@@ -132,12 +151,26 @@ body,
                 <label for="exampleFormControlTextarea1">Observations</label>
                 <textarea class="form-control" id="form-observations"> eg missing a bolt </textarea>
             </div>
-            <label class="form-check-label">
-                <input type="checkbox" id="task-completed" class="form-check-input"> task completed
+            <label class="form-check-label" id="task-completed">
+                <input type="checkbox"  class="form-check-input"> task completed
             </label>
         </form>
         <button type="submit" id="submit-form" onClick="App.submitForm()" class="btn btn-primary">Submit</button>
     </template>
+    <template id="settings-template">
+        <h2> Settings</h2>
+        <p> some settings here eg:</p>
+        <h3>Import/ Export</h3>
+        <ul>
+            <li>Load shapefile/Geojson </li>
+            <li> save shapefile/Geojson </li>
+            <li> Reset map </li>
+        </ul>
+        <h3>GPS and location </h3>
+        <p> gps behaviour settings </p>
+        <h3>Basemap </h3>
+        <p> any basemap settings</p>
+        <h3 </template>
 </body>
 
 </html>
