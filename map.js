@@ -21,7 +21,8 @@ var App = {
         document.getElementById('form-instructions').value = p.instructions;
         document.getElementById('form-condition').value = p.condition;
         document.getElementById('form-height').value = p.height;
-        document.getElementById('task-completed').checked = p.taskCompleted;
+        document.getElementById('task-completed-input').checked = p.taskCompleted;
+        console.log(" read task completed: " + p.taskCompleted )
         App.sidebar.show();
     },
     submitForm: function() {
@@ -31,7 +32,8 @@ var App = {
         p.instructions = document.getElementById('form-instructions').value;
         p.condition = document.getElementById('form-condition').value;
         p.height = document.getElementById('form-height').value;
-        p.taskCompleted = document.getElementById('task-completed').checked;
+        p.taskCompleted = document.getElementById('task-completed-input').checked;
+        console.log(" write task completed: " + p.taskCompleted )
         App.sidebar.hide();
         if (p.taskCompleted === true) {
             this.selectedLayer.setStyle (this.taskCompleteStyle);
