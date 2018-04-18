@@ -157,15 +157,15 @@ body,
         </form>
         <button type="submit" id="submit-form" onClick="App.submitForm()" class="btn btn-primary">Save changes</button>
     </template>
+
     <template id="settings-template">
         <h2> Settings</h2>
         <p> some settings here eg:</p>
         <h3>Import/ Export</h3>
-        <ul>
-            <li>Load shapefile/Geojson </li>
-            <li> save shapefile/Geojson </li>
-            <li> Reset map </li>
-        </ul>
+        <button type="" id="reset-map" onClick="App.resetMap()" class="btn btn-primary">Reset map</button>
+        <p>Reset map Re-Loads in original data  - THIS REMOVES ALL YOUR CHANGES!</p> 
+         <button type="" id="upload Changes" onClick="App.uploadChanges" class="btn btn-primary">Upload Changes</button>
+       <p> This button currently does not do anything - but, when implimented, it will  upload the GeoJSON file to a shared hosted area where it can be 'processed'
         <h3>GPS and location </h3>
         <p> gps behaviour settings </p>
         <h3>Basemap </h3>

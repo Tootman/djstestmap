@@ -67,6 +67,11 @@ var App = {
             .catch(function(err) {
                 console.log('Fetch Error :-S', err);
             });
+    },
+    resetMap : function(){
+        localStorage.removeItem("geoJSON");
+        App.geoLayer = {};
+        App.loadGeoJSONLayer("ham-green-demo.json");
     }
 };
 
