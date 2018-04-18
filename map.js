@@ -191,7 +191,7 @@ L.control.watermark({ position: 'bottomright' }).addTo(App.map);
 // ----------------------------------- other  ---------
 L.control.scale().addTo(App.map);
 
-// --------------------------------------------- my custom control
+// --------------------------------------------- my custom control -----
 L.Control.myControl = L.Control.extend({
     onAdd: (e) => {
         const myControl_div = L.DomUtil.create('div', 'custom-control');
@@ -209,6 +209,49 @@ L.Control.myControl = L.Control.extend({
 L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
 L.control.myControl({
     position: 'bottomright'
+}).addTo(App.map);
+
+
+ // ------------------------------------------ temp control ---
+var debugControl_div;
+//debugControl_div.innerHTML += "<br>";
+// debugControl_div.style = "background-color:white";
+
+App.map.on('locationfound', onLocationFound);
+App.map.on('locationerror', onLocationError);
+
+function onLocationFound(e){
+    debugToMap("type: " + e.type + " acc: " + e.accuracy);
+    console.log("location success");
+    console.log(e);
+};
+function onLocationError(){
+    debugToMap("location failed");
+};
+
+
+function debugToMap (message)  {
+    let d= new Date();
+
+    debugControl_div.innerHTML += d.getMinutes()+":" + d.getSeconds() + " " + message + "<br>";
+}
+
+L.Control.debugControl = L.Control.extend({
+    onAdd: (e) => {
+        debugControl_div = L.DomUtil.create('div');
+        debugControl_div.onclick = function() {
+            console.log("debug control clicked!");
+    
+            //alert("Load Shapefile or do something else");
+        }
+
+        debugControl_div.style = "background-color:white; max-width:50vw";
+        return debugControl_div;
+    }
+});
+L.control.debugControl = (opts) => { return new L.Control.debugControl(opts) };
+L.control.debugControl({
+    position: 'bottomleft'
 }).addTo(App.map);
 
 // ---------------------------------- map events ---
