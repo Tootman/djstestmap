@@ -212,7 +212,7 @@ L.control.myControl({
 }).addTo(App.map);
 
 
- // ------------------------------------------ temp control ---
+ // ------------------------------------------ temp control testing location problem ---
 var debugControl_div;
 //debugControl_div.innerHTML += "<br>";
 // debugControl_div.style = "background-color:white";
@@ -221,7 +221,7 @@ App.map.on('locationfound', onLocationFound);
 App.map.on('locationerror', onLocationError);
 
 function onLocationFound(e){
-    debugToMap("type: " + e.type + " acc: " + e.accuracy);
+    debugToMap("type: " + e.type + " accuracy: " + e.accuracy + <br>);
     console.log("location success");
     console.log(e);
 };
