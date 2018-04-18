@@ -221,7 +221,7 @@ App.map.on('locationfound', onLocationFound);
 App.map.on('locationerror', onLocationError);
 
 function onLocationFound(e){
-    debugToMap("type: " + e.type + " accuracy: " + e.accuracy + <br>);
+    debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
     console.log("location success");
     console.log(e);
 };
