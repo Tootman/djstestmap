@@ -22,7 +22,7 @@ var App = {
         document.getElementById('form-condition').value = p.condition;
         document.getElementById('form-height').value = p.height;
         document.getElementById('task-completed-input').checked = p.taskCompleted;
-        console.log(" read task completed: " + p.taskCompleted )
+        console.log(" read task completed: " + p.taskCompleted)
         App.sidebar.show();
     },
     submitForm: function() {
@@ -33,17 +33,21 @@ var App = {
         p.condition = document.getElementById('form-condition').value;
         p.height = document.getElementById('form-height').value;
         p.taskCompleted = document.getElementById('task-completed-input').checked;
-        console.log(" write task completed: " + p.taskCompleted )
+        console.log(" write task completed: " + p.taskCompleted)
         App.sidebar.hide();
-        if (p.taskCompleted === true) {
-            this.selectedLayer.setStyle (this.taskCompleteStyle);
-            console.log(this.taskCompleteStyle);
-        } else {
-            this.selectedLayer.setStyle (this.taskNotCompleteStyle);
-            console.log(this.taskNotCompleteStyle);
-        };
+        this.assignTaskCompletedStyle(this.selectedLayer, p);
         this.map.closePopup();
         this.selectedFeature = null;
+        console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
+        localStorage.setItem("geoJSON", JSON.stringify(this.geoLayer.toGeoJSON()));
+
+    },
+    assignTaskCompletedStyle: function(layer, featureProperty) {
+        if (featureProperty.taskCompleted == true) {
+            layer.setStyle(this.taskCompleteStyle);
+        } else {
+            layer.setStyle(this.taskNotCompleteStyle);
+        }
     },
     loadGeoJSONLayer: function(myFile) {
         fetch(myFile)
@@ -73,6 +77,7 @@ App.setupGeoLayer = function(myJSONdata) {
         onEachFeature: function(feature, layer) {
             console.log(feature.properties.Asset);
             console.log("clicked: " + feature.properties.Asset);
+            App.assignTaskCompletedStyle(layer, feature.properties);
             layer.on('click', function() {
                 App.selectedFeature = feature; // expose selected feature and layer 
                 App.selectedLayer = layer;
@@ -84,16 +89,16 @@ App.setupGeoLayer = function(myJSONdata) {
         },
         style: function(feature) {
             return {
-                color: 'red',
-                fillColor: "red",
+                //color: 'red',
+                //fillColor: "red",
                 fillOpacity: 0.6
             };
         },
         pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, {
                 radius: 8,
-                color: 'red',
-                fillColor: 'red',
+                //color: 'red',
+               // fillColor: 'red',
                 stroke: false,
                 weight: 2,
                 opacity: 1,
@@ -135,7 +140,14 @@ App.overlayMaps = {
     "Ham Green": App.myLayerGroup
 };
 
-App.loadGeoJSONLayer("ham-green-demo.json");
+if (localStorage.getItem("geoJSON") == null) {
+    App.loadGeoJSONLayer("ham-green-demo.json");
+    console.log("no localstoge so retrieving fresh file");
+} else {
+    console.log("reading json from Local storage");
+    App.setupGeoLayer(JSON.parse(localStorage.getItem("geoJSON")));
+}
+
 
 //  ------------------------ instantiate leaflet controls
 
@@ -183,6 +195,7 @@ L.Control.myControl = L.Control.extend({
             App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
             App.sidebar.show();
             //alert("Load Shapefile or do something else");
+
 
         }
         return myControl_div;
