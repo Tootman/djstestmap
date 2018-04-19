@@ -29,8 +29,8 @@
 
 
 
-#submit-form{
-    float:right;
+#submit-form {
+    float: right;
 }
 
 #task-completed input {
@@ -41,7 +41,7 @@
 
 label#task-completed {
     font-size: 1.5em;
-    margin-left:1em;
+    margin-left: 1em;
 }
 
 body {
@@ -55,6 +55,8 @@ body,
     height: 100%;
     width: 100%;
 }
+
+
 
 
 }
@@ -93,30 +95,30 @@ body,
     <script src="map.js"></script>
     <script>
     /*
-                  window.onload = function() {
+                          window.onload = function() {
 
-                var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
-                    //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
+                        var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
+                            //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
 
-                    //sidebar.setContent(document.querySelector("test-div").innerHTML);
-                    console.log(document.querySelector("test-div").innerHTML);
-                    sidebar.toggle();
-                    console.log("clicked marker");
+                            //sidebar.setContent(document.querySelector("test-div").innerHTML);
+                            console.log(document.querySelector("test-div").innerHTML);
+                            sidebar.toggle();
+                            console.log("clicked marker");
 
-                });
+                        });
 
-                var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
-                    sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
-                    sidebar.toggle();
-                    console.log("clicked marker2");
+                        var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
+                            sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
+                            sidebar.toggle();
+                            console.log("clicked marker2");
 
-                });
+                        });
 
-            };
-            */
+                    };
+                    */
     </script>
     <template id="form-template">
-        <h2>Feature edit form </h2>
+       <p>View and edit the feature</p>
         <span data-bind="text: App.selectedFeature.asset"></span>
         <form>
             <div class="form-group">
@@ -152,25 +154,28 @@ body,
                 <textarea class="form-control" id="form-observations"> eg missing a bolt </textarea>
             </div>
             <label class="form-check-label" id="task-completed">
-                <input type="checkbox" id="task-completed-input" class="form-check-input" > task completed
+                <input type="checkbox" id="task-completed-input" class="form-check-input"> task completed
             </label>
         </form>
         <button type="submit" id="submit-form" onClick="App.submitForm()" class="btn btn-primary">Save changes</button>
     </template>
-
     <template id="settings-template">
         <h2> Settings</h2>
         <p> some settings here eg:</p>
         <h3>Import/ Export</h3>
         <button type="" id="reset-map" onClick="App.resetMap()" class="btn btn-primary">Reset map</button>
-        <p>Reset map Re-Loads in original data  - THIS REMOVES ALL YOUR CHANGES!</p> 
-         <button type="" id="upload Changes" onClick="App.uploadChanges" class="btn btn-primary">Upload Changes</button>
-       <p> This button currently does not do anything - but, when implimented, it will  upload the GeoJSON file to a shared hosted area where it can be 'processed'
-        <h3>GPS and location </h3>
-        <p> gps behaviour settings </p>
-        <h3>Basemap </h3>
-        <p> any basemap settings</p>
-        <h3 </template>
+        <p>Reset map Re-Loads in original data - THIS REMOVES ALL YOUR CHANGES!</p>
+        <button type="" id="upload Changes" onClick="App.uploadChanges" class="btn btn-primary">Upload Changes</button>
+        <p> This button currently does not do anything - but, when implimented, it will upload the GeoJSON file to a shared hosted area where it can be 'processed'
+            <h3>GPS and location </h3>
+            <p> gps behaviour settings </p>
+            <h3>Basemap </h3>
+            <p> any basemap settings</p>
+    </template>
+    <template id="popupContent">
+        <div id="popup-title"></div>
+        <div id="popup-edit"></div>
+    </template>
 </body>
 
 </html>

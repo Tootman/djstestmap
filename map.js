@@ -88,9 +88,9 @@ App.setupGeoLayer = function(myJSONdata) {
                 App.selectedLayer = layer;
                 App.whenGeoFeatureClicked();
             });
-            if (feature.properties && feature.properties.Asset) {
-                layer.bindPopup(feature.properties.Asset);
-            }
+            //layer.bindPopup("<button> Edit</button>");
+            layer.bindTooltip( feature.properties.Asset,{className: 'tool-tip-class'});
+           
         },
         style: function(feature) {
             return {
