@@ -213,9 +213,12 @@ L.control.myControl({
 
 
  // ------------------------------------------ temp control testing location problem ---
+
+/*
 var debugControl_div;
 //debugControl_div.innerHTML += "<br>";
 // debugControl_div.style = "background-color:white";
+
 
 App.map.on('locationfound', onLocationFound);
 App.map.on('locationerror', onLocationError);
@@ -253,6 +256,8 @@ L.control.debugControl = (opts) => { return new L.Control.debugControl(opts) };
 L.control.debugControl({
     position: 'bottomleft'
 }).addTo(App.map);
+
+*/
 
 // ---------------------------------- map events ---
 
