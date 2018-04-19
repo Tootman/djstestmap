@@ -161,7 +161,9 @@
         "Asset": "gully grating",
         "description": "small, metal",
         "condition": 4,
-        "instructions": "inspect and check it's clear of debris"
+        "instructions": "inspect and check it's clear of debris",
+        "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_105838.jpg"
+
       }
     },
     {
@@ -219,7 +221,8 @@
         "Asset": "Bench",
         "Description": "wooden",
         "condition": 2,
-        "instructions": "varnsih"
+        "instructions": "varnsih",
+        "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180220_122300.jpg"
       }
     },
     {
@@ -234,7 +237,8 @@
       "properties": {
         "Asset": "Bench",
         "Description": "wooden",
-        "condition": 4
+        "condition": 4,
+        "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_115941.jpg"
       }
     },
     {

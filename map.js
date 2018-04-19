@@ -22,6 +22,9 @@ var App = {
         document.getElementById('form-condition').value = p.condition;
         document.getElementById('form-height').value = p.height;
         document.getElementById('task-completed-input').checked = p.taskCompleted;
+        if (p.photo !== null && p.photo !== undefined) {
+            this.getPhoto(p.photo);
+        }
         console.log(" read task completed: " + p.taskCompleted)
         App.sidebar.show();
     },
@@ -68,13 +71,25 @@ var App = {
                 console.log('Fetch Error :-S', err);
             });
     },
-    resetMap : function(){
+    resetMap: function() {
         localStorage.removeItem("geoJSON");
         App.geoLayer = {};
         App.loadGeoJSONLayer("ham-green-demo.json");
+    },
+    getPhoto: function(photoURL) {
+        fetch(photoURL)
+            .then(res => res.blob()) // Gets the response and returns it as a blob
+            .then(blob => {
+                console.log("blob!");
+                let objectURL = URL.createObjectURL(blob);
+                let myImage = new Image(350);
+                myImage.src = objectURL;
+                myImage.css = "width:500px";
+                //document.getElementById('fetch').appendChild(myImage)
+                document.getElementById('photo-div').appendChild(myImage);
+            });
     }
 };
-
 
 App.setupGeoLayer = function(myJSONdata) {
     // 
@@ -89,8 +104,8 @@ App.setupGeoLayer = function(myJSONdata) {
                 App.whenGeoFeatureClicked();
             });
             //layer.bindPopup("<button> Edit</button>");
-            layer.bindTooltip( feature.properties.Asset,{className: 'tool-tip-class'});
-           
+            layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
+
         },
         style: function(feature) {
             return {
@@ -103,7 +118,7 @@ App.setupGeoLayer = function(myJSONdata) {
             return L.circleMarker(latlng, {
                 radius: 8,
                 //color: 'red',
-               // fillColor: 'red',
+                // fillColor: 'red',
                 stroke: false,
                 weight: 2,
                 opacity: 1,
@@ -212,7 +227,7 @@ L.control.myControl({
 }).addTo(App.map);
 
 
- // ------------------------------------------ temp control testing location problem ---
+// ------------------------------------------ temp control testing location problem ---
 
 /*
 var debugControl_div;
