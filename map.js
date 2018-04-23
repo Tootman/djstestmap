@@ -2,7 +2,7 @@
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
 //
-var App = {
+let App = {
     mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
     taskCompleteStyle: {
@@ -88,6 +88,10 @@ var App = {
                 //document.getElementById('fetch').appendChild(myImage)
                 document.getElementById('photo-div').appendChild(myImage);
             });
+    },
+    uploadChanges : function (){
+        alert ("called Upload changes!");
+        console.log("called upload Changed")
     }
 };
 
@@ -145,13 +149,13 @@ App.map = L.map('map', {
     center: [51.4384332, -0.3147865],
     zoom: 18,
     maxZoom: 22,
-    layers: [App.satLayer, App.streetsLayer, App.greyscaleLayer]
+    layers: [App.satLayer]
 });
 
 // create group of basemap layers
 App.baseMaps = {
     "Greyscale": App.greyscaleLayer,
-    "Streets": App.streetsLayer,
+    //"Streets": App.streetsLayer,
     "Satallite map": App.satLayer
 };
 
@@ -187,7 +191,9 @@ App.lc = L.control.locate({
     position: 'topright',
     strings: {
         title: "My location (will use GPS if available)"
-    }
+    },
+   //setView: 'Once'
+   layer: App.myLayerGroup
 }).addTo(App.map);
 
 // ------------------------------------------- logo watermark ------------ 
@@ -229,8 +235,8 @@ L.control.myControl({
 
 // ------------------------------------------ temp control testing location problem ---
 
-/*
-var debugControl_div;
+
+let debugControl_div;
 //debugControl_div.innerHTML += "<br>";
 // debugControl_div.style = "background-color:white";
 
@@ -272,7 +278,7 @@ L.control.debugControl({
     position: 'bottomleft'
 }).addTo(App.map);
 
-*/
+
 
 // ---------------------------------- map events ---
 

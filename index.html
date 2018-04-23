@@ -58,6 +58,7 @@ body,
     transition: left 0.2s, width 0.2s!important;
 }
 
+
 }
 html,
 body,
@@ -94,27 +95,27 @@ body,
     <script src="map.js"></script>
     <script>
     /*
-                              window.onload = function() {
+                                  window.onload = function() {
 
-                            var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
-                                //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
+                                var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
+                                    //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
 
-                                //sidebar.setContent(document.querySelector("test-div").innerHTML);
-                                console.log(document.querySelector("test-div").innerHTML);
-                                sidebar.toggle();
-                                console.log("clicked marker");
+                                    //sidebar.setContent(document.querySelector("test-div").innerHTML);
+                                    console.log(document.querySelector("test-div").innerHTML);
+                                    sidebar.toggle();
+                                    console.log("clicked marker");
 
-                            });
+                                });
 
-                            var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
-                                sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
-                                sidebar.toggle();
-                                console.log("clicked marker2");
+                                var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
+                                    sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
+                                    sidebar.toggle();
+                                    console.log("clicked marker2");
 
-                            });
+                                });
 
-                        };
-                        */
+                            };
+                            */
     </script>
     <template id="form-template">
         <p>View and edit the feature</p>
@@ -165,12 +166,18 @@ body,
         <h3>Import/ Export</h3>
         <button type="" id="reset-map" onClick="App.resetMap()" class="btn btn-primary">Reset map</button>
         <p>Reset map Re-Loads in original data - THIS REMOVES ALL YOUR CHANGES!</p>
-        <button type="" id="upload Changes" onClick="App.uploadChanges" class="btn btn-primary">Upload Changes</button>
+        <button type="" id="upload-changes" onClick="App.uploadChanges()" class="btn btn-primary">Upload Changes</button>
         <p> This button currently does not do anything - but, when implimented, it will upload the GeoJSON file to a shared hosted area where it can be 'processed'
             <h3>GPS and location </h3>
             <p> gps behaviour settings </p>
             <h3>Basemap </h3>
             <p> any basemap settings</p>
+            <form enctype="multipart/form-data" action="https://geo.danieljsimmons.uk/dan1/upload/upload.php" method="POST">
+                <p>Upload your file</p>
+                <input type="file" name="uploaded_file"></input>
+                <br />
+                <input type="submit" value="Upload"></input>
+            </form>
     </template>
     <template id="popupContent">
         <div id="popup-title"></div>
