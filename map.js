@@ -2,6 +2,9 @@
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
 //
+
+
+
 let App = {
     mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
@@ -89,12 +92,29 @@ let App = {
                 document.getElementById('photo-div').appendChild(myImage);
             });
     },
-    uploadChanges : function (){
-        alert ("called Upload changes!");
-        console.log("called upload Changed")
+    uploadChanges: function() {
+        // alert("called Upload changes!");
+        //console.log("called upload Changed");
+        // $('#sidebar').fadeOut();
+        let myData = { 'name': 'Jimmy', 'age': 27 };
+        console.log("Ajax json upload clicked!");
+        $.ajax({
+            type: "POST",
+            url: "https://geo.danieljsimmons.uk/dan1/upload/upload.php",
+            //url: "http://localhost/xampp/phpserver/upload.php",
+            data: {
+                jsondata: JSON.stringify(myData)
+
+            },
+            success: function(msg) {
+                console.log("success: !" + msg);
+            },
+            error: function(returnval) {
+                console.log("error:" +returnval )
+            }
+        });
     }
 };
-
 App.setupGeoLayer = function(myJSONdata) {
     // 
     App.geoLayer = L.geoJson(myJSONdata, {
@@ -135,6 +155,10 @@ App.setupGeoLayer = function(myJSONdata) {
     App.map.addLayer(App.geoLayer);
     App.myLayerGroup.addLayer(App.geoLayer);
 };
+
+// jquery and POST
+
+
 
 
 // -- instantiate map objects (layers etc)
@@ -192,8 +216,8 @@ App.lc = L.control.locate({
     strings: {
         title: "My location (will use GPS if available)"
     },
-   //setView: 'Once'
-   layer: App.myLayerGroup
+    //setView: 'Once'
+    layer: App.myLayerGroup
 }).addTo(App.map);
 
 // ------------------------------------------- logo watermark ------------ 
@@ -244,20 +268,21 @@ let debugControl_div;
 App.map.on('locationfound', onLocationFound);
 App.map.on('locationerror', onLocationError);
 
-function onLocationFound(e){
+function onLocationFound(e) {
     debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
     console.log("location success");
     console.log(e);
 };
-function onLocationError(){
+
+function onLocationError() {
     debugToMap("location failed");
 };
 
 
-function debugToMap (message)  {
-    let d= new Date();
+function debugToMap(message) {
+    let d = new Date();
 
-    debugControl_div.innerHTML += d.getMinutes()+":" + d.getSeconds() + " " + message + "<br>";
+    debugControl_div.innerHTML += d.getMinutes() + ":" + d.getSeconds() + " " + message + "<br>";
 }
 
 L.Control.debugControl = L.Control.extend({
@@ -265,7 +290,7 @@ L.Control.debugControl = L.Control.extend({
         debugControl_div = L.DomUtil.create('div');
         debugControl_div.onclick = function() {
             console.log("debug control clicked!");
-    
+
             //alert("Load Shapefile or do something else");
         }
 
