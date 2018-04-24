@@ -120,7 +120,7 @@ let App = {
         let url = "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php";
         fetch(url, {
                 method: 'POST', // or 'PUT'
-                body: "name=" + myData, // data can be `string` or {object}!
+                body: "name=" + JSON.stringify(myData), // data can be `string` or {object}!
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                 }
