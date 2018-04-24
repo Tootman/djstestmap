@@ -96,7 +96,7 @@ let App = {
         // alert("called Upload changes!");
         //console.log("called upload Changed");
         // $('#sidebar').fadeOut();
-        let myData = { 'name': 'Jimmy', 'age': 27 };
+        // let myData = { 'name': 'Jimmy', 'age': 27 };  // simple test data for json
         console.log("json upload clicked!");
         /*
         $.ajax({           // using JQuery - but doesnt yet work
@@ -120,7 +120,7 @@ let App = {
         let url = "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php";
         fetch(url, {
                 method: 'POST', // or 'PUT'
-                body: "name=" + JSON.stringify(myData), // data can be `string` or {object}!
+                body: "name=" + JSON.stringify(this.geoLayer.toGeoJSON()), // data can be `string` or {object}!
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                 }
