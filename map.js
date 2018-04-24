@@ -97,8 +97,9 @@ let App = {
         //console.log("called upload Changed");
         // $('#sidebar').fadeOut();
         let myData = { 'name': 'Jimmy', 'age': 27 };
-        console.log("Ajax json upload clicked!");
-        $.ajax({
+        console.log("json upload clicked!");
+        /*
+        $.ajax({           // using JQuery - but doesnt yet work
             type: "POST",
             url: "https://geo.danieljsimmons.uk/dan1/upload/upload.php",
             //url: "http://localhost/xampp/phpserver/upload.php",
@@ -113,6 +114,21 @@ let App = {
                 console.log("error:" +returnval )
             }
         });
+        */
+        //let data = "{name: 'Freddy'}";
+        // let data = '{ name:"John", age:30, car:null }';
+        let url = "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php";
+        fetch(url, {
+                method: 'POST', // or 'PUT'
+                body: "name=" + myData, // data can be `string` or {object}!
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => {
+                console.log("json sent ok apparently!");
+            })
+            .catch(error => console.error('Error:', error))
+            .then(response => console.log('Success:', response));
     }
 };
 App.setupGeoLayer = function(myJSONdata) {
