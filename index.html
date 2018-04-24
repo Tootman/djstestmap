@@ -166,24 +166,38 @@ body,
         <button type="submit" id="submit-form" onClick="App.submitForm()" class="btn btn-primary">Save changes</button>
     </template>
     <template id="settings-template">
-        <h2> Settings</h2>
+        <h3> Settings</h3>
         <p> some settings here eg:</p>
-        <h3>Import/ Export</h3>
-        <button type="" id="reset-map" onClick="App.resetMap()" class="btn btn-primary">Reset map</button>
-        <p>Reset map Re-Loads in original data - THIS REMOVES ALL YOUR CHANGES!</p>
-        <button type="" id="upload-changes" onClick="App.uploadChanges()" class="btn btn-primary">Upload Changes</button>
-        <p> This button currently does not do anything - but, when implimented, it will upload the GeoJSON file to a shared hosted area where it can be 'processed'
-            <h3>GPS and location </h3>
+        <h4>Import/ Export</h4>
+         <p>
+         <button type="" id="upload-changes" onClick="App.uploadChanges()" class="btn btn-primary">Upload map to cloud</button> </p>
+       
+       
+        <hr>
+          <h4>GPS and location </h4>
             <p> gps behaviour settings </p>
-            <h3>Basemap </h3>
+        <hr>
+            <h4>Basemap </h4>
             <p> any basemap settings</p>
+            <hr>
+            <h4>User</h4>
+            <p> Possable future form with Username,  and/or login, User notes, equipment used etc
+            <hr>
+            <h4>Other</h4>
+              <p>
+                <button type="" id="reset-map" onClick="App.resetMap()" class="btn btn-primary btn-danger  btn-sm">Reset map</button>
+        Reset map Re-Loads in original data - THIS REMOVES ALL YOUR CHANGES!</p>
+
+
+
+            <!-- 
             <form enctype="multipart/form-data" action="https://geo.danieljsimmons.uk/dan1/upload/upload.php" method="POST">
                 <p>Upload a json file from local storage</p>
-                <input type="file" name="uploaded_file"></input>
+                <input type="file" name="uploaded_file"></input>       
                 <br />
-                <input  type="submit" value="Upload"></input>
-            </form>
-            <button  onClick="App.uploadChanges()">JSON upload" </button>
+                <input  type="submit" value="Upload"></input>             
+             </form> -->
+           
     </template>
     <template id="popupContent">
         <div id="popup-title"></div>
