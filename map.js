@@ -77,7 +77,7 @@ let App = {
     resetMap: function() {
         localStorage.removeItem("geoJSON");
         App.geoLayer = {};
-        App.loadGeoJSONLayer( demoJSONmapdata);
+        App.loadGeoJSONLayer(demoJSONmapdata);
     },
     getPhoto: function(photoURL) {
         fetch(photoURL)
@@ -105,6 +105,75 @@ let App = {
             })
             .catch(error => console.error('Error:', error))
             .then(response => console.log('Success:', response));
+    },
+    initDebugControl: function() {
+        let debugControl_div;
+        App.map.on('locationfound', onLocationFound);
+        App.map.on('locationerror', onLocationError);
+
+        function onLocationFound(e) {
+            debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
+            console.log("location success");
+            console.log(e);
+        };
+
+        function onLocationError() {
+            debugToMap("location failed");
+        };
+
+        function debugToMap(message) {
+            let d = new Date();
+            debugControl_div.innerHTML += d.getMinutes() + ":" + d.getSeconds() + " " + message + "<br>";
+        }
+
+        L.Control.debugControl = L.Control.extend({
+            onAdd: (e) => {
+                debugControl_div = L.DomUtil.create('div');
+                debugControl_div.onclick = function() {
+                    console.log("debug control clicked!");
+
+                    //alert("Load Shapefile or do something else");
+                }
+
+                debugControl_div.style = "background-color:white; max-width:50vw";
+                return debugControl_div;
+            }
+        });
+        L.control.debugControl = (opts) => { return new L.Control.debugControl(opts) };
+        L.control.debugControl({
+            position: 'bottomleft'
+        }).addTo(App.map);
+    },
+    initSettingsControl: function() {
+        L.Control.myControl = L.Control.extend({
+            onAdd: (e) => {
+                const myControl_div = L.DomUtil.create('div', 'custom-control');
+                myControl_div.onclick = function() {
+                    console.log("custom control clicked!");
+                    App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
+                    App.sidebar.show();
+                    //alert("Load Shapefile or do something else");
+                }
+                return myControl_div;
+            }
+        });
+        L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
+        L.control.myControl({
+            position: 'bottomright'
+        }).addTo(App.map);
+    },
+    initLogoWatermark: function() {
+        L.Control.watermark = L.Control.extend({
+            onAdd: (e) => {
+                App.watermark = L.DomUtil.create('IMG', 'custom-control');
+                App.watermark.src = 'ORCL-logo-cropped.png';
+                App.watermark.style.opacity = 0.3;
+                App.watermark.style.background = "none";
+                return App.watermark;
+            }
+        });
+        L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
+        L.control.watermark({ position: 'bottomright' }).addTo(App.map);
     }
 };
 App.setupGeoLayer = function(myJSONdata) {
@@ -156,13 +225,13 @@ App.map = L.map('map', {
     center: [51.4384332, -0.3147865],
     zoom: 18,
     maxZoom: 22,
-    layers: [App.streetsLayer , App.myLayerGroup]// loads with this layer initially
+    layers: [App.streetsLayer, App.myLayerGroup] // loads with this layer initially
 });
 
 // create group of basemap layers
 App.baseMaps = {
     "Greyscale": App.greyscaleLayer,
-     "Streets": App.streetsLayer,
+    "Streets": App.streetsLayer,
     "Satellite": App.satLayer
 };
 
@@ -171,29 +240,40 @@ App.overlayMaps = {
     "Ham Green": App.myLayerGroup
 };
 
+// --------------------------------------- setup controls  
+
+
+App.initDebugControl()
+App.initSettingsControl()
+L.control.scale().addTo(App.map)
+App.initLogoWatermark()
+setupSideBar()
+checkLocalStorage() // loads GeoJSON Browser's local storage if available otherwise loads local (initial) file
+
 L.control.layers(App.baseMaps, App.overlayMaps).addTo(App.map);
 
-
-if (localStorage.getItem("geoJSON") == null) {
-    App.loadGeoJSONLayer(demoJSONmapdata);
-    console.log("no localstoge so retrieving fresh file");
-} else {
-    console.log("reading json from Local storage");
-    App.setupGeoLayer(JSON.parse(localStorage.getItem("geoJSON")));
+function checkLocalStorage() {
+    if (localStorage.getItem("geoJSON") == null) {
+        App.loadGeoJSONLayer(App.settings.demoJSONmapdata);
+        console.log("no localstoge so retrieving fresh file");
+    } else {
+        console.log("reading json from Local storage");
+        App.setupGeoLayer(JSON.parse(localStorage.getItem("geoJSON")));
+    }
 }
-
 
 //  ------------------------ instantiate leaflet controls
 
 
-
 // ------sidebar controll plugin
-App.sidebar = L.control.sidebar('sidebar', {
-    position: 'left',
-    closeButton: 'true',
-    autoPan: false
-});
-App.map.addControl(App.sidebar);
+function setupSideBar() {
+    App.sidebar = L.control.sidebar('sidebar', {
+        position: 'left',
+        closeButton: 'true',
+        autoPan: false
+    });
+    App.map.addControl(App.sidebar);
+}
 
 // -------------------- GPS location plugin
 App.lc = L.control.locate({
@@ -206,88 +286,12 @@ App.lc = L.control.locate({
 }).addTo(App.map);
 
 // ------------------------------------------- logo watermark ------------ 
-L.Control.watermark = L.Control.extend({
-    onAdd: (e) => {
-        App.watermark = L.DomUtil.create('IMG', 'custom-control');
-        App.watermark.src = 'ORCL-logo-cropped.png';
-        App.watermark.style.opacity = 0.3;
-        App.watermark.style.background = "none";
-        return App.watermark;
-    }
-});
-L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
-L.control.watermark({ position: 'bottomright' }).addTo(App.map);
 
-// ----------------------------------- other  ---------
-L.control.scale().addTo(App.map);
 
 // --------------------------------------------- my custom control -----
-L.Control.myControl = L.Control.extend({
-    onAdd: (e) => {
-        const myControl_div = L.DomUtil.create('div', 'custom-control');
-        myControl_div.onclick = function() {
-            console.log("custom control clicked!");
-            App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
-            App.sidebar.show();
-            //alert("Load Shapefile or do something else");
-
-
-        }
-        return myControl_div;
-    }
-});
-L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
-L.control.myControl({
-    position: 'bottomright'
-}).addTo(App.map);
 
 
 // ------------------------------------------ temp control testing location problem ---
-
-
-let debugControl_div;
-//debugControl_div.innerHTML += "<br>";
-// debugControl_div.style = "background-color:white";
-
-
-App.map.on('locationfound', onLocationFound);
-App.map.on('locationerror', onLocationError);
-
-function onLocationFound(e) {
-    debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
-    console.log("location success");
-    console.log(e);
-};
-
-function onLocationError() {
-    debugToMap("location failed");
-};
-
-
-function debugToMap(message) {
-    let d = new Date();
-
-    debugControl_div.innerHTML += d.getMinutes() + ":" + d.getSeconds() + " " + message + "<br>";
-}
-
-L.Control.debugControl = L.Control.extend({
-    onAdd: (e) => {
-        debugControl_div = L.DomUtil.create('div');
-        debugControl_div.onclick = function() {
-            console.log("debug control clicked!");
-
-            //alert("Load Shapefile or do something else");
-        }
-
-        debugControl_div.style = "background-color:white; max-width:50vw";
-        return debugControl_div;
-    }
-});
-L.control.debugControl = (opts) => { return new L.Control.debugControl(opts) };
-L.control.debugControl({
-    position: 'bottomleft'
-}).addTo(App.map);
-
 
 
 // ---------------------------------- map events ---
