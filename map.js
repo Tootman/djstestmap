@@ -174,75 +174,75 @@ let App = {
         });
         L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
         L.control.watermark({ position: 'bottomright' }).addTo(App.map);
+    },
+    setupGeoLayer: function(myJSONdata) {
+        // 
+        App.geoLayer = L.geoJson(myJSONdata, {
+            onEachFeature: function(feature, layer) {
+                console.log("clicked: " + feature.properties.Asset);
+                App.assignTaskCompletedStyle(layer, feature.properties);
+                layer.on('click', function() {
+                    App.selectedFeature = feature; // expose selected feature and layer 
+                    App.selectedLayer = layer;
+                    App.whenGeoFeatureClicked();
+                });
+                //layer.bindPopup("<button> Edit</button>");
+                layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
+
+            },
+            style: function(feature) {
+                return {
+                    fillOpacity: 0.6
+                };
+            },
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 8,
+                    stroke: false,
+                    weight: 2,
+                    opacity: 1,
+                    weight: 4,
+                    fillOpacity: 1
+                });
+            },
+            interactive: true
+        });
+        // App.map.addLayer(App.geoLayer);
+        App.myLayerGroup.addLayer(App.geoLayer);
     }
 };
-App.setupGeoLayer = function(myJSONdata) {
-    // 
-    App.geoLayer = L.geoJson(myJSONdata, {
-        onEachFeature: function(feature, layer) {
-            console.log("clicked: " + feature.properties.Asset);
-            App.assignTaskCompletedStyle(layer, feature.properties);
-            layer.on('click', function() {
-                App.selectedFeature = feature; // expose selected feature and layer 
-                App.selectedLayer = layer;
-                App.whenGeoFeatureClicked();
-            });
-            //layer.bindPopup("<button> Edit</button>");
-            layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
-
-        },
-        style: function(feature) {
-            return {
-                fillOpacity: 0.6
-            };
-        },
-        pointToLayer: function(feature, latlng) {
-            return L.circleMarker(latlng, {
-                radius: 8,
-                stroke: false,
-                weight: 2,
-                opacity: 1,
-                weight: 4,
-                fillOpacity: 1
-            });
-        },
-        interactive: true
-    });
-    // App.map.addLayer(App.geoLayer);
-    App.myLayerGroup.addLayer(App.geoLayer);
-};
-
 
 // -- instantiate map objects (layers etc)
+function setupBaseLayer()  {
+    App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
+    App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
+    App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });
+    App.myLayerGroup = L.layerGroup();
 
-App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
-App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
-App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });
-App.myLayerGroup = L.layerGroup();
+    // create map with 3 layers
+    App.map = L.map('map', {
+        center: [51.4384332, -0.3147865],
+        zoom: 18,
+        maxZoom: 22,
+        layers: [App.streetsLayer, App.myLayerGroup] // loads with this layer initially
+    });
 
-// create map with 3 layers
-App.map = L.map('map', {
-    center: [51.4384332, -0.3147865],
-    zoom: 18,
-    maxZoom: 22,
-    layers: [App.streetsLayer, App.myLayerGroup] // loads with this layer initially
-});
+    // create group of basemap layers
+    App.baseMaps = {
+        "Greyscale": App.greyscaleLayer,
+        "Streets": App.streetsLayer,
+        "Satellite": App.satLayer
+    };
 
-// create group of basemap layers
-App.baseMaps = {
-    "Greyscale": App.greyscaleLayer,
-    "Streets": App.streetsLayer,
-    "Satellite": App.satLayer
-};
-
-// create group of overlay layers
-App.overlayMaps = {
-    "Ham Green": App.myLayerGroup
-};
+    // create group of overlay layers
+    App.overlayMaps = {
+        "Ham Green": App.myLayerGroup
+    };
+}
 
 // --------------------------------------- setup controls  
 
-
+setupBaseLayer()
 App.initDebugControl()
 App.initSettingsControl()
 L.control.scale().addTo(App.map)
