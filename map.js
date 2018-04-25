@@ -1,10 +1,6 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
-//
-
-
-
 let App = {
     mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
@@ -15,6 +11,9 @@ let App = {
     taskNotCompleteStyle: {
         fillColor: 'red',
         color: 'red'
+    },
+    settings: {
+        demoJSONfile: 'ham-green-demo.json'
     },
     whenGeoFeatureClicked: function() {
         let p = App.selectedFeature.properties;
@@ -44,7 +43,7 @@ let App = {
         this.assignTaskCompletedStyle(this.selectedLayer, p);
         this.map.closePopup();
         this.selectedFeature = null;
-        console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
+        // console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
         localStorage.setItem("geoJSON", JSON.stringify(this.geoLayer.toGeoJSON()));
 
     },
@@ -77,7 +76,7 @@ let App = {
     resetMap: function() {
         localStorage.removeItem("geoJSON");
         App.geoLayer = {};
-        App.loadGeoJSONLayer("ham-green-demo.json");
+        App.loadGeoJSONLayer(this.settings.demoJSONfile);
     },
     getPhoto: function(photoURL) {
         fetch(photoURL)
@@ -93,31 +92,10 @@ let App = {
             });
     },
     uploadChanges: function() {
-        // alert("called Upload changes!");
-        //console.log("called upload Changed");
-        // $('#sidebar').fadeOut();
-        // let myData = { 'name': 'Jimmy', 'age': 27 };  // simple test data for json
-        console.log("json upload clicked!");
-        /*
-        $.ajax({           // using JQuery - but doesnt yet work
-            type: "POST",
-            url: "https://geo.danieljsimmons.uk/dan1/upload/upload.php",
-            //url: "http://localhost/xampp/phpserver/upload.php",
-            data: {
-                jsondata: JSON.stringify(myData)
 
-            },
-            success: function(msg) {
-                console.log("success: !" + msg);
-            },
-            error: function(returnval) {
-                console.log("error:" +returnval )
-            }
-        });
-        */
-        //let data = "{name: 'Freddy'}";
-        // let data = '{ name:"John", age:30, car:null }';
-        let url = "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php";
+        console.log("json upload clicked!");
+
+        const url = "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php";
         fetch(url, {
                 method: 'POST', // or 'PUT'
                 body: "name=" + JSON.stringify(this.geoLayer.toGeoJSON()), // data can be `string` or {object}!
@@ -131,11 +109,11 @@ let App = {
             .then(response => console.log('Success:', response));
     }
 };
+
 App.setupGeoLayer = function(myJSONdata) {
     // 
     App.geoLayer = L.geoJson(myJSONdata, {
         onEachFeature: function(feature, layer) {
-            console.log(feature.properties.Asset);
             console.log("clicked: " + feature.properties.Asset);
             App.assignTaskCompletedStyle(layer, feature.properties);
             layer.on('click', function() {
@@ -149,16 +127,12 @@ App.setupGeoLayer = function(myJSONdata) {
         },
         style: function(feature) {
             return {
-                //color: 'red',
-                //fillColor: "red",
                 fillOpacity: 0.6
             };
         },
         pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, {
                 radius: 8,
-                //color: 'red',
-                // fillColor: 'red',
                 stroke: false,
                 weight: 2,
                 opacity: 1,
@@ -168,20 +142,14 @@ App.setupGeoLayer = function(myJSONdata) {
         },
         interactive: true
     });
-    App.map.addLayer(App.geoLayer);
-    App.myLayerGroup.addLayer(App.geoLayer);
+    // App.map.addLayer(App.geoLayer);    //djs!
+    // App.myLayerGroup.addLayer(App.geoLayer);  //djs!
 };
 
-// jquery and POST
-
-
-
-
 // -- instantiate map objects (layers etc)
-
-App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
+// App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 }); //djs!
 App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
-App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });
+// App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 }); //djs!
 App.myLayerGroup = L.layerGroup();
 
 // create map with 3 layers
@@ -189,23 +157,24 @@ App.map = L.map('map', {
     center: [51.4384332, -0.3147865],
     zoom: 18,
     maxZoom: 22,
-    layers: [App.satLayer]
+    // layers: [App.satLayer] //djs
+    layers: [App.streetsLayer] //djs
 });
 
 // create group of basemap layers
-App.baseMaps = {
-    "Greyscale": App.greyscaleLayer,
-    //"Streets": App.streetsLayer,
-    "Satallite map": App.satLayer
-};
-
+// App.baseMaps = {    // djs
+    // "Greyscale": App.greyscaleLayer,  //djs
+   //  "Streets": App.streetsLayer,  //djs
+    // "Satallite map": App.satLayer //djs
+// };  // djs
+ 
 // create group of overlay layers
 App.overlayMaps = {
     "Ham Green": App.myLayerGroup
 };
 
 if (localStorage.getItem("geoJSON") == null) {
-    App.loadGeoJSONLayer("ham-green-demo.json");
+    App.loadGeoJSONLayer(App.settings.demoJSONfile);
     console.log("no localstoge so retrieving fresh file");
 } else {
     console.log("reading json from Local storage");
