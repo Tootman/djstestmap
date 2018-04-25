@@ -1,10 +1,6 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
-//
-
-
-
 let App = {
     mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
@@ -15,6 +11,10 @@ let App = {
     taskNotCompleteStyle: {
         fillColor: 'red',
         color: 'red'
+    },
+    settings: {
+        demoJSONmapdata: 'ham-green-demo.json',
+        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php'
     },
     whenGeoFeatureClicked: function() {
         let p = App.selectedFeature.properties;
@@ -77,15 +77,15 @@ let App = {
     resetMap: function() {
         localStorage.removeItem("geoJSON");
         App.geoLayer = {};
-        App.loadGeoJSONLayer("ham-green-demo.json");
+        App.loadGeoJSONLayer( demoJSONmapdata);
     },
     getPhoto: function(photoURL) {
         fetch(photoURL)
             .then(res => res.blob()) // Gets the response and returns it as a blob
             .then(blob => {
                 console.log("blob!");
-                let objectURL = URL.createObjectURL(blob);
-                let myImage = new Image(350);
+                const objectURL = URL.createObjectURL(blob);
+                const myImage = new Image(350);
                 myImage.src = objectURL;
                 myImage.css = "width:500px";
                 //document.getElementById('fetch').appendChild(myImage)
@@ -93,31 +93,7 @@ let App = {
             });
     },
     uploadChanges: function() {
-        // alert("called Upload changes!");
-        //console.log("called upload Changed");
-        // $('#sidebar').fadeOut();
-        // let myData = { 'name': 'Jimmy', 'age': 27 };  // simple test data for json
-        console.log("json upload clicked!");
-        /*
-        $.ajax({           // using JQuery - but doesnt yet work
-            type: "POST",
-            url: "https://geo.danieljsimmons.uk/dan1/upload/upload.php",
-            //url: "http://localhost/xampp/phpserver/upload.php",
-            data: {
-                jsondata: JSON.stringify(myData)
-
-            },
-            success: function(msg) {
-                console.log("success: !" + msg);
-            },
-            error: function(returnval) {
-                console.log("error:" +returnval )
-            }
-        });
-        */
-        //let data = "{name: 'Freddy'}";
-        // let data = '{ name:"John", age:30, car:null }';
-        let url = "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php";
+        const url = App.settings.uploadjsonURL;
         fetch(url, {
                 method: 'POST', // or 'PUT'
                 body: "name=" + JSON.stringify(this.geoLayer.toGeoJSON()), // data can be `string` or {object}!
@@ -135,7 +111,6 @@ App.setupGeoLayer = function(myJSONdata) {
     // 
     App.geoLayer = L.geoJson(myJSONdata, {
         onEachFeature: function(feature, layer) {
-            console.log(feature.properties.Asset);
             console.log("clicked: " + feature.properties.Asset);
             App.assignTaskCompletedStyle(layer, feature.properties);
             layer.on('click', function() {
@@ -149,16 +124,12 @@ App.setupGeoLayer = function(myJSONdata) {
         },
         style: function(feature) {
             return {
-                //color: 'red',
-                //fillColor: "red",
                 fillOpacity: 0.6
             };
         },
         pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, {
                 radius: 8,
-                //color: 'red',
-                // fillColor: 'red',
                 stroke: false,
                 weight: 2,
                 opacity: 1,
@@ -168,13 +139,9 @@ App.setupGeoLayer = function(myJSONdata) {
         },
         interactive: true
     });
-    App.map.addLayer(App.geoLayer);
+    // App.map.addLayer(App.geoLayer);
     App.myLayerGroup.addLayer(App.geoLayer);
 };
-
-// jquery and POST
-
-
 
 
 // -- instantiate map objects (layers etc)
@@ -189,14 +156,14 @@ App.map = L.map('map', {
     center: [51.4384332, -0.3147865],
     zoom: 18,
     maxZoom: 22,
-    layers: [App.satLayer]
+    layers: [App.streetsLayer , App.myLayerGroup]// loads with this layer initially
 });
 
 // create group of basemap layers
 App.baseMaps = {
     "Greyscale": App.greyscaleLayer,
-    //"Streets": App.streetsLayer,
-    "Satallite map": App.satLayer
+     "Streets": App.streetsLayer,
+    "Satellite": App.satLayer
 };
 
 // create group of overlay layers
@@ -204,8 +171,11 @@ App.overlayMaps = {
     "Ham Green": App.myLayerGroup
 };
 
+L.control.layers(App.baseMaps, App.overlayMaps).addTo(App.map);
+
+
 if (localStorage.getItem("geoJSON") == null) {
-    App.loadGeoJSONLayer("ham-green-demo.json");
+    App.loadGeoJSONLayer(demoJSONmapdata);
     console.log("no localstoge so retrieving fresh file");
 } else {
     console.log("reading json from Local storage");
@@ -215,8 +185,7 @@ if (localStorage.getItem("geoJSON") == null) {
 
 //  ------------------------ instantiate leaflet controls
 
-// Add the layers control
-L.control.layers(App.baseMaps, App.overlayMaps).addTo(App.map);
+
 
 // ------sidebar controll plugin
 App.sidebar = L.control.sidebar('sidebar', {
@@ -233,7 +202,7 @@ App.lc = L.control.locate({
         title: "My location (will use GPS if available)"
     },
     //setView: 'Once'
-    layer: App.myLayerGroup
+    // layer: App.myLayerGroup
 }).addTo(App.map);
 
 // ------------------------------------------- logo watermark ------------ 

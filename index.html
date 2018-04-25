@@ -57,31 +57,17 @@ body,
 .leaflet-sidebar.left {
     transition: left 0.2s, width 0.2s!important;
 }
-
-
-
-
-
-
-}
-html,
-body,
-#map {
-    /* height: 100%; */
-
-    width: 100%;
-}
 </style>
 
 <head>
     <title>Leaflet PouchDB Tiles example</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="css/L.Control.Sidebar.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
 <body>
@@ -89,8 +75,6 @@ body,
     <div id="sidebar">
         <h1>leaflet-sidebar</h1>
     </div>
-    <!-- <button onclick="seed()">Seed world from Z=0 until Z=4</div> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
     <script src="https://unpkg.com/pouchdb@^5.0.0/dist/pouchdb.js"></script>
     <script src="L.TileLayer.PouchDBCached.js"></script>
@@ -99,28 +83,6 @@ body,
     <script src="map.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script> -->
     <script>
-    /*
-                                                  window.onload = function() {
-
-                                                var sidebarMarker = L.marker([51.4379409, -0.3185518], { title: 'Litter Bin' }).addTo(myLayerGroup).on('click', function() {
-                                                    //sidebar.setContent("Information,  instructions, option to edit or take photo -  everything regarding the " + sidebarMarker.options.title);
-
-                                                    //sidebar.setContent(document.querySelector("test-div").innerHTML);
-                                                    console.log(document.querySelector("test-div").innerHTML);
-                                                    sidebar.toggle();
-                                                    console.log("clicked marker");
-
-                                                });
-
-                                                var sidebarMarker2 = L.marker([51.4389529, -0.3195528], { title: 'Bench' }).addTo(myLayerGroup).on('click', function() {
-                                                    sidebar.setContent("Information,  instructions, option to edit or take photo  " + sidebarMarker2.options.title);
-                                                    sidebar.toggle();
-                                                    console.log("clicked marker2");
-
-                                                });
-
-                                            };
-                                            */
     </script>
     <template id="form-template">
         <p>View and edit the feature</p>
@@ -169,35 +131,23 @@ body,
         <h3> Settings</h3>
         <p> some settings here eg:</p>
         <h4>Import/ Export</h4>
-         <p>
-         <button type="" id="upload-changes" onClick="App.uploadChanges()" class="btn btn-primary">Upload map to cloud</button> </p>
-       
-       
+        <p>
+            <button type="" id="upload-changes" onClick="App.uploadChanges()" class="btn btn-primary">Upload map to cloud</button>
+        </p>
         <hr>
-          <h4>GPS and location </h4>
-            <p> gps behaviour settings </p>
+        <h4>GPS and location </h4>
+        <p> gps behaviour settings </p>
         <hr>
-            <h4>Basemap </h4>
-            <p> any basemap settings</p>
-            <hr>
-            <h4>User</h4>
-            <p> Possable future form with Username,  and/or login, User notes, equipment used etc
+        <h4>Basemap </h4>
+        <p> any basemap settings</p>
+        <hr>
+        <h4>User</h4>
+        <p> Possable future form with Username, and/or login, User notes, equipment used etc
             <hr>
             <h4>Other</h4>
-              <p>
+            <p>
                 <button type="" id="reset-map" onClick="App.resetMap()" class="btn btn-primary btn-danger  btn-sm">Reset map</button>
-        Reset map Re-Loads in original data - THIS REMOVES ALL YOUR CHANGES!</p>
-
-
-
-            <!-- 
-            <form enctype="multipart/form-data" action="https://geo.danieljsimmons.uk/dan1/upload/upload.php" method="POST">
-                <p>Upload a json file from local storage</p>
-                <input type="file" name="uploaded_file"></input>       
-                <br />
-                <input  type="submit" value="Upload"></input>             
-             </form> -->
-           
+                Reset map Re-Loads in original data - THIS REMOVES ALL YOUR CHANGES!</p>
     </template>
     <template id="popupContent">
         <div id="popup-title"></div>
