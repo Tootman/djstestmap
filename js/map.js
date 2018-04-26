@@ -1,27 +1,12 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
-let App = {
-    mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
-    taskCompleteStyle: {
-        fillColor: 'grey',
-        color: 'black'
-    },
-    taskNotCompleteStyle: {
-        fillColor: 'red',
-        color: 'red'
-    },
-    settings: {
-        demoJSONmapdata: 'ham-green-demo.json',
-        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php',
-        assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
-    },
+const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
             App.sidebar.setContent(document.getElementById("form-template").innerHTML)
             const cond = document.getElementById('form-condition')
-            let options = App.settings.assetConditionOptions;
+            let options = myMap.settings.editform.assetConditionOptions;
             options.forEach(function(item) {
                 let opt = document.createElement('option');
                 opt.innerText = item
@@ -100,7 +85,6 @@ let App = {
                 const myImage = new Image(350);
                 myImage.src = objectURL;
                 myImage.css = "width:500px";
-                //document.getElementById('fetch').appendChild(myImage)
                 document.getElementById('photo-div').appendChild(myImage);
             });
     },
@@ -175,7 +159,7 @@ let App = {
     }
 };
 
-let myMap = {
+const myMap = {
     settings: {
         symbology: {
             taskCompleteStyle: {
@@ -186,11 +170,16 @@ let myMap = {
                 fillColor: 'red',
                 color: 'red'
             }
+        },
+        mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
+        demoJSONmapdata: 'ham-green-demo.json',
+        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php',
+        editform: {
+            assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
         }
-    }
+    },
 }
-
-
 
 
 function initLogoWatermark() {
@@ -232,8 +221,6 @@ function initDebugControl() {
             debugControl_div = L.DomUtil.create('div');
             debugControl_div.onclick = function() {
                 console.log("debug control clicked!");
-
-                //alert("Load Shapefile or do something else");
             }
 
             debugControl_div.style = "background-color:white; max-width:50vw";
@@ -249,9 +236,21 @@ function initDebugControl() {
 
 // -- instantiate map objects (layers etc)
 function setupBaseLayer() {
-    App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
-    App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
-    App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });
+    App.greyscaleLayer = L.tileLayer(myMap.settings.mbUrl, {
+        id: 'mapbox.light',
+        attribution: myMap.settings.mbAttr,
+        maxZoom: 22
+    });
+    App.streetsLayer = L.tileLayer(myMap.settings.mbUrl, {
+        id: 'mapbox.streets',
+        attribution: myMap.settings.mbAttr,
+        maxZoom: 22
+    });
+    App.satLayer = L.tileLayer(myMap.settings.mbUrl, {
+        id: 'mapbox.satellite',
+        attribution: myMap.settings.mbAttr,
+        maxZoom: 22
+    });
     App.myLayerGroup = L.layerGroup();
 
     // create map with 3 layers
@@ -275,7 +274,7 @@ function setupBaseLayer() {
     };
 }
 
-// --------------------------------------- setup controls  
+// --------------------------------------- Main --------------------- 
 
 setupBaseLayer()
 initDebugControl()
@@ -283,6 +282,7 @@ App.initSettingsControl()
 L.control.scale().addTo(App.map)
 initLogoWatermark()
 setupSideBar()
+initLocationControl()
 checkLocalStorage() // loads GeoJSON Browser's local storage if available otherwise loads local (initial) file
 
 L.control.layers(App.baseMaps, App.overlayMaps).addTo(App.map);
@@ -311,25 +311,17 @@ function setupSideBar() {
 }
 
 // -------------------- GPS location plugin
-App.lc = L.control.locate({
-    position: 'topright',
-    strings: {
-        title: "My location (will use GPS if available)"
-    },
-    //setView: 'Once'
-    // layer: App.myLayerGroup
-}).addTo(App.map);
+function initLocationControl() {
+    App.lc = L.control.locate({
+        position: 'topright',
+        strings: {
+            title: "My location (will use GPS if available)"
+        },
+        //setView: 'Once'
+        // layer: App.myLayerGroup
+    }).addTo(App.map);
+}
 
-// ------------------------------------------- logo watermark ------------ 
-
-
-// --------------------------------------------- my custom control -----
-
-
-// ------------------------------------------ temp control testing location problem ---
-
-
-// ---------------------------------- map events ---
 
 App.map.on('click', onMapClick);
 
