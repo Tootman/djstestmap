@@ -1,6 +1,74 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
+// the myMap object holds all the map and global settings, and sets up and manages the basemaps
+let myMap = {
+    settings: {
+        symbology: {
+            taskCompleteStyle: {
+                fillColor: 'grey',
+                color: 'black'
+            },
+            taskNotCompleteStyle: {
+                fillColor: 'red',
+                color: 'red'
+            }
+        },
+        mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
+        demoJSONmapdata: 'ham-green-demo.json',
+        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php',
+        editform: {
+            assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
+        }
+    },
+    setupBaseLayer: function() {
+        const greyscaleLayer = L.tileLayer(this.settings.mbUrl, {
+            id: 'mapbox.light',
+            attribution: myMap.settings.mbAttr,
+            maxZoom: 22
+        });
+        const streetsLayer = L.tileLayer(this.settings.mbUrl, {
+            id: 'mapbox.streets',
+            attribution: myMap.settings.mbAttr,
+            maxZoom: 22
+        });
+        const satLayer = L.tileLayer(this.settings.mbUrl, {
+            id: 'mapbox.satellite',
+            attribution: myMap.settings.mbAttr,
+            maxZoom: 22
+        });
+        const myLayerGroup = L.layerGroup();
+        this.myLayerGroup = myLayerGroup
+
+        // create map with 3 layers
+        const map = L.map('map', {
+            center: [51.4384332, -0.3147865],
+            zoom: 18,
+            maxZoom: 22,
+            layers: [streetsLayer, myLayerGroup] // loads with this layer initially
+        });
+
+        // create group of basemap layers
+        let baseMaps = {
+            "Greyscale": greyscaleLayer,
+            "Streets": streetsLayer,
+            "Satellite": satLayer
+        };
+        this.basemaps = baseMaps
+
+        // create group of overlay layers
+        let overlayMaps = {
+            "Ham Green": myLayerGroup
+        };
+        this.overlayMap = overlayMaps
+
+        this.LayersControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+        return map;
+    }
+}
+
+// the App object holds the GeoJSON layer and manages all it's interactions with the user
 const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
@@ -160,70 +228,6 @@ const App = {
     }
 };
 
-let myMap = {
-    settings: {
-        symbology: {
-            taskCompleteStyle: {
-                fillColor: 'grey',
-                color: 'black'
-            },
-            taskNotCompleteStyle: {
-                fillColor: 'red',
-                color: 'red'
-            }
-        },
-        mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
-        demoJSONmapdata: 'ham-green-demo.json',
-        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php',
-        editform: {
-            assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
-        }
-    },
-    setupBaseLayer: function() {
-        const greyscaleLayer = L.tileLayer(this.settings.mbUrl, {
-            id: 'mapbox.light',
-            attribution: myMap.settings.mbAttr,
-            maxZoom: 22
-        });
-        const streetsLayer = L.tileLayer(this.settings.mbUrl, {
-            id: 'mapbox.streets',
-            attribution: myMap.settings.mbAttr,
-            maxZoom: 22
-        });
-        const satLayer = L.tileLayer(this.settings.mbUrl, {
-            id: 'mapbox.satellite',
-            attribution: myMap.settings.mbAttr,
-            maxZoom: 22
-        });
-        const myLayerGroup = L.layerGroup();
-        this.myLayerGroup = myLayerGroup
-
-        // create map with 3 layers
-        const map = L.map('map', {
-            center: [51.4384332, -0.3147865],
-            zoom: 18,
-            maxZoom: 22,
-            layers: [streetsLayer, myLayerGroup] // loads with this layer initially
-        });
-
-        // create group of basemap layers
-        const baseMaps = {
-            "Greyscale": greyscaleLayer,
-            "Streets": streetsLayer,
-            "Satellite": satLayer
-        };
-
-        // create group of overlay layers
-        const overlayMaps = {
-            "Ham Green": myLayerGroup
-        };
-
-        L.control.layers(baseMaps, overlayMaps).addTo(map);
-        return map;
-    }
-}
-
 
 function initLogoWatermark() {
     L.Control.watermark = L.Control.extend({
@@ -280,7 +284,6 @@ function initDebugControl() {
 // --------------------------------------- Main --------------------- 
 
 let Map = myMap.setupBaseLayer()
-
 initDebugControl()
 App.initSettingsControl()
 L.control.scale().addTo(Map)
@@ -301,7 +304,7 @@ function checkLocalStorage() {
     }
 }
 
-//  ------------------------ instantiate leaflet controls
+//  ------------------------  leaflet controls
 
 
 // ------sidebar controll plugin
@@ -325,6 +328,7 @@ function initLocationControl() {
         // layer: App.myLayerGroup
     }).addTo(Map);
 }
+
 
 
 Map.on('click', onMapClick);
