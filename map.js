@@ -14,13 +14,25 @@ let App = {
     },
     settings: {
         demoJSONmapdata: 'ham-green-demo.json',
-        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php'
+        uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php',
+        assetConditionOptions: [6,5,4,3,2,1,"n/a"]
     },
     whenGeoFeatureClicked: function() {
+        function renderSideBar() {
+            App.sidebar.setContent(document.getElementById("form-template").innerHTML)
+            const cond = document.getElementById('form-condition')    
+            let options = App.settings.assetConditionOptions;
+            options.forEach(function(item) {
+                let opt =  document.createElement('option');
+                opt.innerText = item
+                cond.appendChild(opt) 
+            });
+        }
+
         let p = App.selectedFeature.properties;
-        App.sidebar.setContent(document.getElementById("form-template").innerHTML);
-        document.getElementById('form-asset').value = p.Asset;
-        document.getElementById('form-description').value = p.description;
+        renderSideBar()
+        document.getElementById('form-asset').value = p.Asset
+        document.getElementById('form-description').value = p.description
         document.getElementById('form-instructions').value = p.instructions;
         document.getElementById('form-condition').value = p.condition;
         document.getElementById('form-height').value = p.height;
@@ -213,7 +225,7 @@ let App = {
 };
 
 // -- instantiate map objects (layers etc)
-function setupBaseLayer()  {
+function setupBaseLayer() {
     App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
     App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
     App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });

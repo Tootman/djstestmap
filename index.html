@@ -1,66 +1,8 @@
 <!DOCTYPE html>
 <html>
-<style>
-#mapid {
-    height: 800px;
-}
-
-.custom-control,
-.custom-control2 {
-    width: 150px;
-    height: 30px;
-    font-size: 1.5em;
-    margin: auto;
-    text-align: center;
-    background-color: brown;
-    color: white;
-}
-
-.custom-control::before,
-.custom-control2::before {
-    content: 'Settings';
-}
-
-.custom-control:hover,
-.custom-control2:hover {
-    background-color: #ea3737;
-    /* dark red */
-}
-
-#submit-form {
-    float: right;
-}
-
-#task-completed input {
-    width: 1em;
-    height: 1em;
-    position: relative;
-}
-
-label#task-completed {
-    font-size: 1.5em;
-    margin-left: 1em;
-}
-
-body {
-    padding: 0;
-    margin: 0;
-}
-
-html,
-body,
-#map {
-    height: 100%;
-    width: 100%;
-}
-
-.leaflet-sidebar.left {
-    transition: left 0.2s, width 0.2s!important;
-}
-</style>
 
 <head>
-    <title>Leaflet PouchDB Tiles example</title>
+    <title>ORCL WebApp Demo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
@@ -68,6 +10,7 @@ body,
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="css/L.Control.Sidebar.css" />
+    <link rel="stylesheet" href="css/app.css" />
 </head>
 
 <body>
@@ -87,7 +30,7 @@ body,
     <template id="form-template">
         <p>View and edit the feature</p>
         <div id="photo-div"></div>
-        <span data-bind="text: App.selectedFeature.asset"></span>
+    
         <form>
             <div class="form-group">
                 <label for="exampleFormControlInput1">Asset name</label>
@@ -108,13 +51,7 @@ body,
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Asset condition</label>
                 <select class="form-control" id="form-condition">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>n/a</option>
+                 
                 </select>
             </div>
             <div class="form-group">
