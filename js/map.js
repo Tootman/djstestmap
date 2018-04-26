@@ -1,8 +1,6 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
-let myLayerGroup = {} // temp fudge
-
 const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
@@ -157,11 +155,12 @@ const App = {
             interactive: true
         });
         // App.map.addLayer(App.geoLayer);
-        myLayerGroup.addLayer(App.geoLayer);
+        myMap.myLayerGroup.addLayer(App.geoLayer);
+        //mapOb.myLayerGroup.addLayer(App.geoLayer);
     }
 };
 
-const myMap = {
+let myMap = {
     settings: {
         symbology: {
             taskCompleteStyle: {
@@ -197,7 +196,8 @@ const myMap = {
             attribution: myMap.settings.mbAttr,
             maxZoom: 22
         });
-        myLayerGroup = L.layerGroup();
+        const myLayerGroup = L.layerGroup();
+        this.myLayerGroup = myLayerGroup
 
         // create map with 3 layers
         const map = L.map('map', {
@@ -220,7 +220,6 @@ const myMap = {
         };
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
-
         return map;
     }
 }
@@ -280,7 +279,8 @@ function initDebugControl() {
 
 // --------------------------------------- Main --------------------- 
 
-Map = myMap.setupBaseLayer()
+let Map = myMap.setupBaseLayer()
+
 initDebugControl()
 App.initSettingsControl()
 L.control.scale().addTo(Map)
