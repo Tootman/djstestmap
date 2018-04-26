@@ -1,6 +1,8 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
+let myLayerGroup = {} // temp fudge
+
 const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
@@ -39,7 +41,7 @@ const App = {
         console.log(" write task completed: " + p.taskCompleted)
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
-        this.map.closePopup();
+        Map.closePopup();
         this.selectedFeature = null;
         console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
         localStorage.setItem("geoJSON", JSON.stringify(this.geoLayer.toGeoJSON()));
@@ -119,7 +121,7 @@ const App = {
         L.control.myControl = (opts) => { return new L.Control.myControl(opts) };
         L.control.myControl({
             position: 'bottomright'
-        }).addTo(App.map);
+        }).addTo(Map);
     },
 
     setupGeoLayer: function(myJSONdata) {
@@ -155,7 +157,7 @@ const App = {
             interactive: true
         });
         // App.map.addLayer(App.geoLayer);
-        App.myLayerGroup.addLayer(App.geoLayer);
+        myLayerGroup.addLayer(App.geoLayer);
     }
 };
 
@@ -179,6 +181,48 @@ const myMap = {
             assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
         }
     },
+    setupBaseLayer: function() {
+        const greyscaleLayer = L.tileLayer(this.settings.mbUrl, {
+            id: 'mapbox.light',
+            attribution: myMap.settings.mbAttr,
+            maxZoom: 22
+        });
+        const streetsLayer = L.tileLayer(this.settings.mbUrl, {
+            id: 'mapbox.streets',
+            attribution: myMap.settings.mbAttr,
+            maxZoom: 22
+        });
+        const satLayer = L.tileLayer(this.settings.mbUrl, {
+            id: 'mapbox.satellite',
+            attribution: myMap.settings.mbAttr,
+            maxZoom: 22
+        });
+        myLayerGroup = L.layerGroup();
+
+        // create map with 3 layers
+        const map = L.map('map', {
+            center: [51.4384332, -0.3147865],
+            zoom: 18,
+            maxZoom: 22,
+            layers: [streetsLayer, myLayerGroup] // loads with this layer initially
+        });
+
+        // create group of basemap layers
+        const baseMaps = {
+            "Greyscale": greyscaleLayer,
+            "Streets": streetsLayer,
+            "Satellite": satLayer
+        };
+
+        // create group of overlay layers
+        const overlayMaps = {
+            "Ham Green": myLayerGroup
+        };
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        return map;
+    }
 }
 
 
@@ -193,13 +237,13 @@ function initLogoWatermark() {
         }
     });
     L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
-    L.control.watermark({ position: 'bottomright' }).addTo(App.map);
+    L.control.watermark({ position: 'bottomright' }).addTo(Map);
 }
 
 function initDebugControl() {
     let debugControl_div;
-    App.map.on('locationfound', onLocationFound);
-    App.map.on('locationerror', onLocationError);
+    Map.on('locationfound', onLocationFound);
+    Map.on('locationerror', onLocationError);
 
     function onLocationFound(e) {
         debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
@@ -230,66 +274,26 @@ function initDebugControl() {
     L.control.debugControl = (opts) => { return new L.Control.debugControl(opts) };
     L.control.debugControl({
         position: 'bottomleft'
-    }).addTo(App.map);
+    }).addTo(Map);
 }
 
-
-// -- instantiate map objects (layers etc)
-function setupBaseLayer() {
-    App.greyscaleLayer = L.tileLayer(myMap.settings.mbUrl, {
-        id: 'mapbox.light',
-        attribution: myMap.settings.mbAttr,
-        maxZoom: 22
-    });
-    App.streetsLayer = L.tileLayer(myMap.settings.mbUrl, {
-        id: 'mapbox.streets',
-        attribution: myMap.settings.mbAttr,
-        maxZoom: 22
-    });
-    App.satLayer = L.tileLayer(myMap.settings.mbUrl, {
-        id: 'mapbox.satellite',
-        attribution: myMap.settings.mbAttr,
-        maxZoom: 22
-    });
-    App.myLayerGroup = L.layerGroup();
-
-    // create map with 3 layers
-    App.map = L.map('map', {
-        center: [51.4384332, -0.3147865],
-        zoom: 18,
-        maxZoom: 22,
-        layers: [App.streetsLayer, App.myLayerGroup] // loads with this layer initially
-    });
-
-    // create group of basemap layers
-    App.baseMaps = {
-        "Greyscale": App.greyscaleLayer,
-        "Streets": App.streetsLayer,
-        "Satellite": App.satLayer
-    };
-
-    // create group of overlay layers
-    App.overlayMaps = {
-        "Ham Green": App.myLayerGroup
-    };
-}
 
 // --------------------------------------- Main --------------------- 
 
-setupBaseLayer()
+Map = myMap.setupBaseLayer()
 initDebugControl()
 App.initSettingsControl()
-L.control.scale().addTo(App.map)
+L.control.scale().addTo(Map)
 initLogoWatermark()
 setupSideBar()
 initLocationControl()
 checkLocalStorage() // loads GeoJSON Browser's local storage if available otherwise loads local (initial) file
 
-L.control.layers(App.baseMaps, App.overlayMaps).addTo(App.map);
+
 
 function checkLocalStorage() {
     if (localStorage.getItem("geoJSON") == null) {
-        App.loadGeoJSONLayer(App.settings.demoJSONmapdata);
+        App.loadGeoJSONLayer(myMap.settings.demoJSONmapdata);
         console.log("no localstoge so retrieving fresh file");
     } else {
         console.log("reading json from Local storage");
@@ -307,7 +311,7 @@ function setupSideBar() {
         closeButton: 'true',
         autoPan: false
     });
-    App.map.addControl(App.sidebar);
+    Map.addControl(App.sidebar);
 }
 
 // -------------------- GPS location plugin
@@ -319,18 +323,18 @@ function initLocationControl() {
         },
         //setView: 'Once'
         // layer: App.myLayerGroup
-    }).addTo(App.map);
+    }).addTo(Map);
 }
 
 
-App.map.on('click', onMapClick);
+Map.on('click', onMapClick);
 
 function onMapClick(e) {
     //App.sidebar.hide();
     console.log(e);
 };
 
-App.map.on('popupclose', function(e) {
+Map.on('popupclose', function(e) {
     App.sidebar.hide();
     App.selectedFeature = null;
 });
