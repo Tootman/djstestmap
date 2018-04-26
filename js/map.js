@@ -1,29 +1,14 @@
 "use strict";
 // Overview: when a feature on the geo layer is clicked it is assigned to  App.selectedFeature for interaction
 
-const myMapSettings = {
+let App = {
     mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
-    symbology: {
-        taskCompleteStylex: {
-            fillColor: 'grey',
-            color: 'black'
-        },
-        taskNotCompleteStylex: {
-            fillColor: 'red',
-            color: 'red'
-        },
-
-    }
-}
-const Appx = {
-    mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
-    taskCompleteStylex: {
+    taskCompleteStyle: {
         fillColor: 'grey',
         color: 'black'
     },
-    taskNotCompleteStylex: {
+    taskNotCompleteStyle: {
         fillColor: 'red',
         color: 'red'
     },
@@ -77,9 +62,9 @@ const Appx = {
     },
     assignTaskCompletedStyle: function(layer, featureProperty) {
         if (featureProperty.taskCompleted == true) {
-            layer.setStyle(myMapSettings.symbology.taskCompleteStyle);
+            layer.setStyle(myMap.settings.symbology.taskCompleteStyle);
         } else {
-            layer.setStyle(myMapSettings.symbology.taskCompleteStyle);
+            layer.setStyle(myMap.settings.symbology.taskNotCompleteStyle);
         }
     },
     loadGeoJSONLayer: function(myFile) {
@@ -133,6 +118,7 @@ const Appx = {
             .catch(error => console.error('Error:', error))
             .then(response => console.log('Success:', response));
     },
+
     initSettingsControl: function() {
         L.Control.myControl = L.Control.extend({
             onAdd: (e) => {
@@ -189,6 +175,38 @@ const Appx = {
     }
 };
 
+let myMap = {
+    settings: {
+        symbology: {
+            taskCompleteStyle: {
+                fillColor: 'grey',
+                color: 'black'
+            },
+            taskNotCompleteStyle: {
+                fillColor: 'red',
+                color: 'red'
+            }
+        }
+    }
+}
+
+
+
+
+function initLogoWatermark() {
+    L.Control.watermark = L.Control.extend({
+        onAdd: (e) => {
+            const watermark = L.DomUtil.create('IMG', 'custom-control');
+            watermark.src = 'ORCL-logo-cropped.png';
+            watermark.style.opacity = 0.3;
+            watermark.style.background = "none";
+            return watermark;
+        }
+    });
+    L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
+    L.control.watermark({ position: 'bottomright' }).addTo(App.map);
+}
+
 function initDebugControl() {
     let debugControl_div;
     App.map.on('locationfound', onLocationFound);
@@ -226,57 +244,40 @@ function initDebugControl() {
     L.control.debugControl({
         position: 'bottomleft'
     }).addTo(App.map);
-},
-
-function initLogoWatermark() {
-    L.Control.watermark = L.Control.extend({
-        onAdd: (e) => {
-            App.watermark = L.DomUtil.create('IMG', 'custom-control');
-            App.watermark.src = 'ORCL-logo-cropped.png';
-            App.watermark.style.opacity = 0.3;
-            App.watermark.style.background = "none";
-            return App.watermark;
-        }
-    });
-    L.control.watermark = (opts) => { return new L.Control.watermark(opts) };
-    L.control.watermark({ position: 'bottomright' }).addTo(App.map);
-},
-
-
-const myMap = {
-    // -- instantiate map objects (layers etc)
-    setupBaseLayer: function() {
-        App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
-        App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
-        App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });
-        App.myLayerGroup = L.layerGroup();
-
-        // create map with 3 layers
-        App.map = L.map('map', {
-            center: [51.4384332, -0.3147865],
-            zoom: 18,
-            maxZoom: 22,
-            layers: [App.streetsLayer, App.myLayerGroup] // loads with this layer initially
-        });
-
-        // create group of basemap layers
-        App.baseMaps = {
-            "Greyscale": App.greyscaleLayer,
-            "Streets": App.streetsLayer,
-            "Satellite": App.satLayer
-        };
-
-        // create group of overlay layers
-        App.overlayMaps = {
-            "Ham Green": App.myLayerGroup
-        };
-    }
 }
 
 
+// -- instantiate map objects (layers etc)
+function setupBaseLayer() {
+    App.greyscaleLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.light', attribution: App.mbAttr, maxZoom: 22 });
+    App.streetsLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.streets', attribution: App.mbAttr, maxZoom: 22 });
+    App.satLayer = L.tileLayer(App.mbUrl, { id: 'mapbox.satellite', attribution: App.mbAttr, maxZoom: 22 });
+    App.myLayerGroup = L.layerGroup();
+
+    // create map with 3 layers
+    App.map = L.map('map', {
+        center: [51.4384332, -0.3147865],
+        zoom: 18,
+        maxZoom: 22,
+        layers: [App.streetsLayer, App.myLayerGroup] // loads with this layer initially
+    });
+
+    // create group of basemap layers
+    App.baseMaps = {
+        "Greyscale": App.greyscaleLayer,
+        "Streets": App.streetsLayer,
+        "Satellite": App.satLayer
+    };
+
+    // create group of overlay layers
+    App.overlayMaps = {
+        "Ham Green": App.myLayerGroup
+    };
+}
+
 // --------------------------------------- setup controls  
 
-myMap.setupBaseLayer()
+setupBaseLayer()
 initDebugControl()
 App.initSettingsControl()
 L.control.scale().addTo(App.map)
