@@ -11,6 +11,9 @@
     <button onclick="iterateOverOjectProps()">iterateOverOjectProps</button>
     <input type="text" id="featureIndex" value="3" />
     <button onclick="generateElements()">generate Elements</button>
+    <button onclick="readAttributes()">Read Attributes</button>
+    <div id="fields-section">
+    </div>
 </body>
 
 </html>
@@ -90,7 +93,8 @@ let sampleGeoData = {
             },
             "properties": {
                 "Asset": "Litterbin",
-                "Condition": 3
+                "Condition": 3,
+                "Completed": true
             }
         },
         {
@@ -121,7 +125,8 @@ let sampleGeoData = {
                 "Asset": "Hedge",
                 "height": 0.7,
                 "description": "privet",
-                "instructions": "cut north face and top"
+                "instructions": "cut north face and top",
+                "Completed": true
             }
         },
         {
@@ -161,7 +166,9 @@ let sampleGeoData = {
                 "Asset": "rough grass",
                 "description": "wild flowers and bulbs",
                 "condition": "n/a",
-                "instructions": "none"
+                "instructions": "none",
+                "Completed": false
+
             }
         },
         {
@@ -302,27 +309,53 @@ function generateElements() {
 
     const featureID = document.getElementById("featureIndex").value
     // console.log(sampleGeoData.features[featureID].properties.Asset)
-
+    document.getElementById("fields-section").innerHTML = null
     let props = sampleGeoData.features[featureID].properties
     const myFunc = Object.keys(props).forEach(
         function(key) {
-            console.log(key + ": " + props[key])
-            createElement("Input", key, props[key])
-                    }
+            //console.log("generateElements: " + typeof(key)+ " " + key + ": " + props[key])
+            if (typeof(props[key]) === "string") {
+                console.log("string: " + key + ": " + props[key])
+                createElement("Input", "text", key, props[key])
+            } else if (typeof(props[key]) === "boolean") {
+                createElement("Input", "Checkbox", key, props[key])
+                console.log("checkbox: " + key + ": " + props[key])
+            } else {
+                console.log("NOT OK: " + typeof(key))
+            }
+        }
+    )
+}
+
+function readAttributes() {
+	const featureID = document.getElementById("featureIndex").value
+	const props = sampleGeoData.features[featureID].properties
+    const myFunc = Object.keys(props).forEach(
+        function(key) {
+            if (typeof(props[key]) === "string") {
+                console.log("string: " + key + ": " + props[key])
+                props[key] = document.getElementById(String("input_" + key)).value
+            }
+        }
     )
 }
 
 
 
-function createElement(type, prop, value, ) {
 
-    var x = document.createElement(type);
-    x.setAttribute("type", "text");
-    x.setAttribute("class", "myClass");
-    x.setAttribute("class", "myClass");
-    x.setAttribute("value", value);
-    x.setAttribute("id", "input_" + prop);
+function createElement(el, type, prop, value) {
 
-    document.body.appendChild(x);
+    let x = document.createElement(el)
+
+    //x.setAttribute("type", type)
+    x.type = type
+    x.class = "myClass"
+    x.value = value
+    x.id = String("input_" + prop)
+    if (type === "Checkbox") {
+        console.log("checkboxValue: " + value)
+        x.checked = value;
+    }
+    document.getElementById("fields-section").appendChild(x);
 }
 </script>
