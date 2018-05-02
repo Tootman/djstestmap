@@ -73,7 +73,7 @@ const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
             App.sidebar.setContent(document.getElementById("form-template").innerHTML)
-            
+
             /* drop down options for conditions
             const cond = document.getElementById('form-condition') // set Asset condition drop down values 
             let options = myMap.settings.editform.assetConditionOptions;
@@ -162,19 +162,32 @@ const App = {
 
     submitForm: function() {
         let p = App.selectedFeature.properties;
-        p.Asset = document.getElementById('form-asset').value
-        p.description = document.getElementById('form-description').value;
-        p.instructions = document.getElementById('form-instructions').value;
-        p.condition = document.getElementById('form-condition').value;
-        p.height = document.getElementById('form-height').value;
-        p.taskCompleted = document.getElementById('task-completed-input').checked;
-        console.log(" write task completed: " + p.taskCompleted)
+        readSidebarFormProperties(p)
+     
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
         Map.closePopup();
         this.selectedFeature = null;
         console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
         localStorage.setItem("geoJSON", JSON.stringify(this.geoLayer.toGeoJSON()));
+
+
+        function readSidebarFormProperties(props) {
+
+            const myFunc = Object.keys(props).forEach(
+                function(key) {
+                    const propType = typeof(props[key])
+                    const el = document.getElementById(String("input_" + key))
+                    if (propType === "string" || propType === "number") {
+                        props[key] = el.value
+                    } else if (propType === "boolean") {
+                        props[key] = el.checked
+                    }
+
+                }
+            )
+        }
+
 
     },
     assignTaskCompletedStyle: function(layer, featureProperty) {
