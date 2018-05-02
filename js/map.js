@@ -73,7 +73,7 @@ const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
             App.sidebar.setContent(document.getElementById("form-template").innerHTML)
-            const cond = document.getElementById('form-condition')
+            const cond = document.getElementById('form-condition') // set Asset condition drop down values 
             let options = myMap.settings.editform.assetConditionOptions;
             options.forEach(function(item) {
                 let opt = document.createElement('option');
@@ -84,18 +84,62 @@ const App = {
 
         let p = App.selectedFeature.properties;
         renderSideBar()
+        this.generateFormElements(p)
+        /*
         document.getElementById('form-asset').value = p.Asset
         document.getElementById('form-description').value = p.description
         document.getElementById('form-instructions').value = p.instructions;
         document.getElementById('form-condition').value = p.condition;
         document.getElementById('form-height').value = p.height;
         document.getElementById('task-completed-input').checked = p.taskCompleted;
+        */
         if (p.photo !== null && p.photo !== undefined) {
             this.getPhoto(p.photo);
         }
         console.log(" read task completed: " + p.taskCompleted)
         App.sidebar.show();
     },
+
+
+    createPropElement: function(el, type, prop, value) {
+
+        let x = document.createElement(el)
+        //x.setAttribute("type", type)
+        x.type = type
+        x.class = "myClass"
+        x.value = value
+        x.id = String("input_" + prop)
+        if (type === "Checkbox") {
+            console.log("checkboxValue: " + value)
+            x.checked = value;
+        }
+        document.getElementById("fields-section").appendChild(x);
+    },
+
+
+    generateFormElements: function(props) {
+        // console.log(sampleGeoData.features[featureID].properties.Asset)
+        const fs =  document.getElementById("fields-section")
+        fs.innerHTML = null
+        // const props = sampleGeoData.features[featureID].properties
+        const myFunc = Object.keys(props).forEach(
+            function(key) {
+                // fs.innerHTML += "<div></div>"
+                //console.log("generateElements: " + typeof(key)+ " " + key + ": " + props[key])
+                const propType = typeof(props[key])
+                if (propType === "string" || propType === "number") {
+                    App.createPropElement("Input", "text", key, props[key])
+                } else if (propType === "boolean") {
+                    App.createPropElement("Input", "Checkbox", key, props[key])
+                } else {
+                    console.log("NOT ok: " + typeof(key))
+                }
+                //fs.innerHTML+= "<div></div>"
+            }
+        )
+    },
+
+
     submitForm: function() {
         let p = App.selectedFeature.properties;
         p.Asset = document.getElementById('form-asset').value

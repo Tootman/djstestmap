@@ -161,6 +161,7 @@
         "Asset": "gully grating",
         "description": "small, metal",
         "condition": 4,
+        "myCustomProperty" : "my custom value",
         "instructions": "inspect and check it's clear of debris",
         "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_105838.jpg"
 
