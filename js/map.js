@@ -73,6 +73,8 @@ const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
             App.sidebar.setContent(document.getElementById("form-template").innerHTML)
+            
+            /* drop down options for conditions
             const cond = document.getElementById('form-condition') // set Asset condition drop down values 
             let options = myMap.settings.editform.assetConditionOptions;
             options.forEach(function(item) {
@@ -80,6 +82,7 @@ const App = {
                 opt.innerText = item
                 cond.appendChild(opt)
             });
+            */
         }
 
         let p = App.selectedFeature.properties;
@@ -101,40 +104,57 @@ const App = {
     },
 
 
-    createPropElement: function(el, type, prop, value) {
+    createFormItem: function(parentTag, el, type, prop, value) {
 
-        let x = document.createElement(el)
-        //x.setAttribute("type", type)
-        x.type = type
-        x.class = "myClass"
-        x.value = value
-        x.id = String("input_" + prop)
-        if (type === "Checkbox") {
-            console.log("checkboxValue: " + value)
-            x.checked = value;
+        const wrapperDiv = createWrapperDiv(parentTag)
+        createLabel(wrapperDiv, el, type, prop, value)
+        createInputBox(wrapperDiv, el, type, prop, value)
+
+        function createWrapperDiv() {
+            let x = document.createElement("div")
+            x.classList.add("form-group")
+            parentTag.appendChild(x)
+            return x
         }
-        document.getElementById("fields-section").appendChild(x);
+
+        function createInputBox(parent) {
+            let x = document.createElement(el)
+            x.setAttribute("type", type)
+            x.type = type
+            x.classList.add("form-control")
+            x.value = value
+            x.id = String("input_" + prop)
+            if (type === "Checkbox") {
+                console.log("checkboxValue: " + value)
+                x.checked = value;
+            }
+            parent.appendChild(x);
+        }
+
+        function createLabel(parent) {
+            let x = document.createElement("label")
+            x.innerHTML = prop
+            parent.appendChild(x);
+        }
     },
-
-
     generateFormElements: function(props) {
         // console.log(sampleGeoData.features[featureID].properties.Asset)
-        const fs =  document.getElementById("fields-section")
+        const fs = document.getElementById("fields-section")
         fs.innerHTML = null
         // const props = sampleGeoData.features[featureID].properties
         const myFunc = Object.keys(props).forEach(
             function(key) {
-                // fs.innerHTML += "<div></div>"
                 //console.log("generateElements: " + typeof(key)+ " " + key + ": " + props[key])
+                // fs.innerHTML += "<br>"
                 const propType = typeof(props[key])
                 if (propType === "string" || propType === "number") {
-                    App.createPropElement("Input", "text", key, props[key])
+                    App.createFormItem(fs, "Input", "text", key, props[key])
                 } else if (propType === "boolean") {
-                    App.createPropElement("Input", "Checkbox", key, props[key])
+                    App.createFormItem(fs, "Input", "Checkbox", key, props[key])
                 } else {
-                    console.log("NOT ok: " + typeof(key))
+                    console.log("NOT OK: " + typeof(key))
                 }
-                //fs.innerHTML+= "<div></div>"
+                //fs.insertAdjacentHTML('beforeEnd', '<br>');
             }
         )
     },
