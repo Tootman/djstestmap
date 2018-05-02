@@ -148,7 +148,7 @@
       },
       "properties": {
         "Asset": "rough grass",
-        "description": "wild flowers and bulbs",
+        "description": "wild flowers and bulbs, no trees",
         "condition": "n/a",
         "instructions": "none",
         "taskCompleted": false

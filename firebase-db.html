@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyB977vJdWTGA-JJ03xotQkeu8X4_Ds_BLQ",
+        authDomain: "fir-realtime-db-24299.firebaseapp.com",
+        databaseURL: "https://fir-realtime-db-24299.firebaseio.com",
+        projectId: "fir-realtime-db-24299",
+        storageBucket: "fir-realtime-db-24299.appspot.com",
+        messagingSenderId: "546067641349"
+    };
+    firebase.initializeApp(config);
+    </script>
+</head>
+
+<body>
+    User id:
+    <input type="text" name="id" id="user_id" /> User name:
+    <input type="text" name="name" id="user_name" />
+    <input type="button" value="save" onclick="save_user()" />
+    <input type="button" value="update" onclick="update_user()" />
+    <input type="button" value="delete" onclick="delete_user()" />
+    <hr>
+    <input type="button" value="retriveMapindex" onclick="retriveMapIndex()" />
+    <input type="button" value="uploadMapData" onclick="retriveMapIndex()" />
+    <input type="button" value="loadJSONFromFile" onclick="  loadJSONFromFile('ham-green-demo.json')" />
+    <div id="users_list"></div>
+    <h2 id="">Map list </h2>
+    <div id="maplist">
+    </div>
+    <script>
+    // Get a reference to the database service
+    var database = firebase.database();
+
+    // literall writing to db: 
+    //database.ref('users/settings').set({ color: 'red', size: 'large' })
+
+    // literal reading database, using a callback on database data change
+    // database.ref('users/').on('value', function(snapshot) {
+    //     console.log(snapshot)
+    //});
+
+    // literal reading database, poling the datase for a snapshot
+    //database.ref('/users/settings').once('value').then(function(snapshot) {
+    //    console.log(snapshot.val().color)
+    //});
+
+    retriveMapIndex()
+
+    function retriveMapIndex() {
+        database.ref('/App/Mapindex').once('value').then(function(snapshot) {
+            console.log(snapshot)
+            displayMapIndeces(snapshot)
+        });
+    }
+
+    function displayMapIndeces(snapshot) {
+        const btn = document.createElement("button")
+        snapshot.val().forEach(
+            function(item) {
+                console.log(item.description)
+                btn.setAttribute("value", item.description)
+                btn.innerHTML = item.description
+                maplist.appendChild(btn);
+            }
+        )
+    }
+
+
+    function loadJSONFromFile(myFile) {
+        fetch(myFile)
+            .then(
+                function(response) {
+                    if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+                    response.json().then(function(data) {
+                        console.log("ok - fetched!")
+                        console.log("data");
+                        sendToDB("/App/Maps", data)
+                        return data;
+                    })
+                }
+            )
+            .catch(function(err) {
+                console.log('Fetch Error :-S', err);
+            });
+    }
+
+    function sendToDB(nodePath, data) {
+        database.ref(nodePath).set({
+            "1": data
+        });
+    }
+
+    //loadJSONFromFile("ham-green-demo.json")
+
+
+
+    function writeData(nodePath) {
+        // let userId = document.getElementById('user_id').value
+        // let name = document.getElementById('user_name').value
+
+        //
+        database.ref(nodePath).set({
+            username: name
+        });
+    }
+
+    function readDataOnce() {
+        let nodePath = '/users/settings'
+        let myProperty = 'color'
+        database.ref(nodePath).once('value').then(function(snapshot) {
+            // console.log(snapshot.val().[myProperty])
+            // eg console.log(snapshot.val().color)
+        });
+    }
+    </script>
+</body>
+
+</html>
