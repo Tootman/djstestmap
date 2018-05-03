@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+    <script src="richmondriverside.js"></script>
     <script>
     // Initialize Firebase
     var config = {
@@ -61,12 +62,14 @@
     }
 
     function displayMapIndeces(snapshot) {
-        const btn = document.createElement("button")
+        
         snapshot.val().forEach(
             function(item) {
+                const btn = document.createElement("button")
                 console.log(item.description)
-                btn.setAttribute("value", item.description)
-                btn.innerHTML = item.description
+                btn.setAttribute("value", item.name)
+                 btn.setAttribute("title", item.description)
+                btn.innerHTML = item.name
                 maplist.appendChild(btn);
             }
         )

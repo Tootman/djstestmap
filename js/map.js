@@ -16,7 +16,8 @@ let myMap = {
         },
         mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
-        demoJSONmapdata: 'ham-green-demo.json',
+        //demoJSONmapdata: 'ham-green-demo.json',
+        // demoJSONmapdata: 'richmondriverside.json',
         uploadjsonURL: 'https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php',
         editform: {
             assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
@@ -59,7 +60,7 @@ let myMap = {
 
         // create group of overlay layers
         let overlayMaps = {
-            "Ham Green": myLayerGroup
+            "myLayers": myLayerGroup
         };
         this.overlayMap = overlayMaps
 
@@ -73,29 +74,12 @@ const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
             App.sidebar.setContent(document.getElementById("form-template").innerHTML)
-
-            /* drop down options for conditions
-            const cond = document.getElementById('form-condition') // set Asset condition drop down values 
-            let options = myMap.settings.editform.assetConditionOptions;
-            options.forEach(function(item) {
-                let opt = document.createElement('option');
-                opt.innerText = item
-                cond.appendChild(opt)
-            });
-            */
         }
 
         let p = App.selectedFeature.properties;
         renderSideBar()
         this.generateFormElements(p)
-        /*
-        document.getElementById('form-asset').value = p.Asset
-        document.getElementById('form-description').value = p.description
-        document.getElementById('form-instructions').value = p.instructions;
-        document.getElementById('form-condition').value = p.condition;
-        document.getElementById('form-height').value = p.height;
-        document.getElementById('task-completed-input').checked = p.taskCompleted;
-        */
+
         if (p.photo !== null && p.photo !== undefined) {
             this.getPhoto(p.photo);
         }
@@ -105,7 +89,6 @@ const App = {
 
 
     createFormItem: function(parentTag, el, type, prop, value) {
-
         const wrapperDiv = createWrapperDiv(parentTag)
         createLabel(wrapperDiv, el, type, prop, value)
         createInputBox(wrapperDiv, el, type, prop, value)
@@ -163,14 +146,13 @@ const App = {
     submitForm: function() {
         let p = App.selectedFeature.properties;
         readSidebarFormProperties(p)
-     
+
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
         Map.closePopup();
         this.selectedFeature = null;
         console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
         localStorage.setItem("geoJSON", JSON.stringify(this.geoLayer.toGeoJSON()));
-
 
         function readSidebarFormProperties(props) {
 
@@ -183,7 +165,6 @@ const App = {
                     } else if (propType === "boolean") {
                         props[key] = el.checked
                     }
-
                 }
             )
         }
@@ -305,6 +286,22 @@ const App = {
     }
 };
 
+function loadMyLayer(layerName) {
+    // just for testing 
+    ClearMyLayers()
+    if (layerName === "Ham") {
+        myMap.settings.demoJSONmapdata = "ham-green-demo.json"
+        loadOverlayLayer ( myMap.settings.demoJSONmapdata)
+    } else if (layerName === "Richmond") {
+        myMap.settings.demoJSONmapdata ="richmondriverside.json"
+        loadOverlayLayer ( myMap.settings.demoJSONmapdata)
+    }
+}
+
+function ClearMyLayers(){
+	// just for testing
+
+}
 
 function initLogoWatermark() {
     L.Control.watermark = L.Control.extend({
@@ -367,13 +364,14 @@ L.control.scale().addTo(Map)
 initLogoWatermark()
 setupSideBar()
 initLocationControl()
-checkLocalStorage() // loads GeoJSON Browser's local storage if available otherwise loads local (initial) file
+//loadOverlayLayer("myMap.settings.demoJSONmapdata") // loads GeoJSON Browser's local storage if available otherwise loads local (initial) file
 
 
 
-function checkLocalStorage() {
+function loadOverlayLayer(fileRef) {
+    myMap.myLayerGroup.clearLayers(App.geoLayer)
     if (localStorage.getItem("geoJSON") == null) {
-        App.loadGeoJSONLayer(myMap.settings.demoJSONmapdata);
+        App.loadGeoJSONLayer(fileRef);
         console.log("no localstoge so retrieving fresh file");
     } else {
         console.log("reading json from Local storage");
