@@ -215,6 +215,7 @@ const App = {
             });
     },
     uploadChanges: function() {
+        // posts to shared hosting
         const url = App.settings.uploadjsonURL;
         fetch(url, {
                 method: 'POST', // or 'PUT'
@@ -236,6 +237,7 @@ const App = {
                 myControl_div.onclick = function() {
                     console.log("custom control clicked!");
                     App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
+                    //loadMyLayer("dummy")
                     App.sidebar.show();
                     //alert("Load Shapefile or do something else");
                 }
@@ -246,6 +248,23 @@ const App = {
         L.control.myControl({
             position: 'bottomright'
         }).addTo(Map);
+    },
+
+    retrieveMapFromFireBase: function(index) {
+
+        let nodePath = String("/App/Maps/" + index)
+        myFunc()
+
+        function myFunc() {
+            fbDatabase.ref(nodePath).once('value').then(function(snapshot) {
+                // loadOverlayLayer(snapshot.val())  // checks storage then tries downliading file
+                const layerData = snapshot.val()
+                console.log("Node: " + layerData)
+                myMap.myLayerGroup.clearLayers(App.geoLayer)
+                App.setupGeoLayer(layerData)
+                document.getElementById('opennewproject').style.display = "none"
+            });
+        }
     },
 
     setupGeoLayer: function(myJSONdata) {
@@ -288,18 +307,57 @@ const App = {
 
 function loadMyLayer(layerName) {
     // just for testing 
-    ClearMyLayers()
-    if (layerName === "Ham") {
-        myMap.settings.demoJSONmapdata = "ham-green-demo.json"
-        loadOverlayLayer ( myMap.settings.demoJSONmapdata)
-    } else if (layerName === "Richmond") {
-        myMap.settings.demoJSONmapdata ="richmondriverside.json"
-        loadOverlayLayer ( myMap.settings.demoJSONmapdata)
+    clearMyLayers()
+    document.getElementById("opennewprojectbutton").style.display = "none"
+    loadFromPresetButtons(layerName)
+    console.log("LoadmyLayer!")
+    loadProjectFromFirebase()
+
+    function loadProjectFromFirebase() {
+        retriveMapIndex()
+
+        function retriveMapIndex() {
+            fbDatabase.ref('/App/Mapindex').once('value').then(function(snapshot) {
+                console.log(snapshot)
+                displayMapIndeces(snapshot)
+            });
+        }
+
+        function displayMapIndeces(snapshot) {
+            snapshot.val().forEach(
+                function(item) {
+                    const btn = document.createElement("button")
+                    console.log(item.description)
+                    btn.setAttribute("value", item.mapID)
+                    btn.setAttribute("title", item.description)
+                    //btn.setAttribute("onClick", String("this.loadJSONFromFB" + "()"))
+                    const id = item.mapID
+                    btn.addEventListener("click", function(e) {
+                        App.retrieveMapFromFireBase(e.target.value)
+                    })
+                    btn.innerHTML = item.name
+                    maplist.appendChild(btn);
+                }
+            )
+
+        }
+
+    }
+
+
+    function loadFromPresetButtons(layerName) {
+        if (layerName === "Ham") {
+            myMap.settings.demoJSONmapdata = "ham-green-demo.json"
+            loadOverlayLayer(myMap.settings.demoJSONmapdata)
+        } else if (layerName === "Richmond") {
+            myMap.settings.demoJSONmapdata = "richmondriverside.json"
+            loadOverlayLayer(myMap.settings.demoJSONmapdata)
+        }
     }
 }
 
-function ClearMyLayers(){
-	// just for testing
+function clearMyLayers() {
+    // just for testing
 
 }
 
@@ -353,9 +411,20 @@ function initDebugControl() {
         position: 'bottomleft'
     }).addTo(Map);
 }
+// firebase
+const fireBaseconfig = {
+    apiKey: "AIzaSyB977vJdWTGA-JJ03xotQkeu8X4_Ds_BLQ",
+    authDomain: "fir-realtime-db-24299.firebaseapp.com",
+    databaseURL: "https://fir-realtime-db-24299.firebaseio.com",
+    projectId: "fir-realtime-db-24299",
+    storageBucket: "fir-realtime-db-24299.appspot.com",
+    messagingSenderId: "546067641349"
+};
+firebase.initializeApp(fireBaseconfig);
 
 
 // --------------------------------------- Main --------------------- 
+const fbDatabase = firebase.database();
 
 let Map = myMap.setupBaseLayer()
 initDebugControl()
