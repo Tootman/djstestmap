@@ -146,6 +146,7 @@ const App = {
     submitForm: function() {
         let p = App.selectedFeature.properties;
         readSidebarFormProperties(p)
+        saveFeatureToFirebase()
 
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
@@ -169,8 +170,24 @@ const App = {
             )
         }
 
+        function saveFeatureToFirebase() {
+            // current id - id of 1st element in geo Array - I guess
+            if (!window.confirm("Save feature to cloud")) {
+                console.log ("save Cancelled!")
+                return;
+                console.log ("save Cancelled!")
+            }
+            const featureIndex = App.selectedLayer._leaflet_id - Object.keys(App.geoLayer._layers)[0] - 1;
+            const nodePath = String("App/Maps/" + App.firebaseHash + "/features")
+            const Ob = {}
+            const myKey = featureIndex
+            Ob[myKey] = App.selectedFeature
+            fbDatabase.ref(nodePath).update(Ob);
+            console.log("saved to firebase!")
+        }
 
     },
+
     assignTaskCompletedStyle: function(layer, featureProperty) {
         if (featureProperty.taskCompleted == true) {
             layer.setStyle(myMap.settings.symbology.taskCompleteStyle);
@@ -240,7 +257,7 @@ const App = {
                     document.getElementById("open-new-project-button").addEventListener("click", function() {
                         loadMyLayer('dummy')
                     });
-                   
+
 
                     //loadMyLayer("dummy")
                     App.sidebar.show();
