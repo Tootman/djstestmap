@@ -1,0 +1,115 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+    {
+        "type": "Feature",
+        "geometry":
+        {
+            "type": "Point",
+            "coordinates": [-0.31431756115682674,
+                51.4378544114393
+            ]
+        },
+    }],
+},
+{
+    "features": [
+        {
+            "type": "Feature",
+            "geometry":
+            {
+                "type": "Point",
+                "coordinates": [-0.31431756115682674,
+                    51.4378544114393
+                ]
+            },
+            "properties":
+            {
+                "Asset": "Litterbin",
+                "Condition": 3,
+                "taskCompleted": false
+
+            }
+        },
+
+        {
+            "type": "Feature",
+            "geometry":
+            {
+                "type": "Point",
+                "coordinates": [-0.31466679296227085,
+                    51.43826652540366
+                ]
+            },
+            "properties":
+            {
+                "Asset": "gully grating",
+                "description": "small, metal",
+                "condition": 4,
+                "myCustomProperty": "my custom value",
+                "instructions": "inspect and check it's clear of debris",
+                "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_105838.jpg",
+                "taskCompleted": false
+
+            }
+        },
+
+        {
+            "type": "Feature",
+            "geometry":
+            {
+                "type": "Point",
+                "coordinates": [-0.31352601594062435,
+                    51.438612622938365
+                ]
+            },
+            "properties":
+            {
+                "Asset": "sign",
+                "description": "welcome, metal",
+                "condition": 1,
+                "instructions": "replace sign",
+                "taskCompleted": false
+            }
+        },
+
+        {
+            "type": "Feature",
+            "geometry":
+            {
+                "type": "Point",
+                "coordinates": [-0.31473320234829316,
+                    51.4392233630455
+                ]
+            },
+            "properties":
+            {
+                "Asset": "Bench",
+                "Description": "wooden",
+                "condition": 4,
+                "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_115941.jpg",
+                "taskCompleted": false
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry":
+            {
+                "type": "Point",
+                "coordinates": [-0.31434623673874285,
+                    51.43878255548275
+                ]
+            },
+            "properties":
+            {
+                "Asset": "na/",
+                "description": "0.1m hole in tarmac",
+                "condition": 1,
+                "instructions": "inspect and fill if necessary",
+                "taskCompleted": false
+            }
+
+
+        }
+    ]
+}

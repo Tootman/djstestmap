@@ -237,6 +237,11 @@ const App = {
                 myControl_div.onclick = function() {
                     console.log("custom control clicked!");
                     App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
+                    document.getElementById("open-new-project-button").addEventListener("click", function() {
+                        loadMyLayer('dummy')
+                    });
+                   
+
                     //loadMyLayer("dummy")
                     App.sidebar.show();
                     //alert("Load Shapefile or do something else");
@@ -262,7 +267,9 @@ const App = {
                 console.log("Node: " + layerData)
                 myMap.myLayerGroup.clearLayers(App.geoLayer)
                 App.setupGeoLayer(layerData)
+                App.firebaseHash = snapshot.key
                 document.getElementById('opennewproject').style.display = "none"
+
             });
         }
     },
@@ -273,7 +280,7 @@ const App = {
             onEachFeature: function(feature, layer) {
                 console.log("clicked: " + feature.properties.Asset);
                 App.assignTaskCompletedStyle(layer, feature.properties);
-                layer.on('click', function() {
+                layer.on('click', function(e) {
                     App.selectedFeature = feature; // expose selected feature and layer 
                     App.selectedLayer = layer;
                     App.whenGeoFeatureClicked();
@@ -305,12 +312,26 @@ const App = {
     }
 };
 
+function uploadChangesToFirebase() {
+    // grab the blobal Mapindex, then send gson layer up to node
+    //const nodePath = String("'/App/Maps/" + myMap.settings.mapIndex)
+    const nodePath = String("App/Maps/" + App.firebaseHash)
+
+    fbDatabase.ref(nodePath).set(
+        App.geoLayer.toGeoJSON()
+    );
+
+    console.log("writing to nodePath: " + nodePath)
+    console.log("writing data: " + App.geoLayer.toGeoJSON())
+}
+
+
 function loadMyLayer(layerName) {
     // just for testing 
     clearMyLayers()
-    document.getElementById("opennewprojectbutton").style.display = "none"
-    loadFromPresetButtons(layerName)
-    console.log("LoadmyLayer!")
+    document.getElementById("open-new-project-button").style.display = "none"
+    //loadFromPresetButtons(layerName)
+    // console.log("LoadmyLayer!")
     loadProjectFromFirebase()
 
     function loadProjectFromFirebase() {
@@ -319,24 +340,31 @@ function loadMyLayer(layerName) {
         function retriveMapIndex() {
             fbDatabase.ref('/App/Mapindex').once('value').then(function(snapshot) {
                 console.log(snapshot)
+                const el = document.getElementById("opennewproject")
+                el.insertAdjacentHTML('afterBegin', 'Open project');
                 displayMapIndeces(snapshot)
             });
         }
 
         function displayMapIndeces(snapshot) {
+            const el = document.getElementById("opennewproject")
             snapshot.val().forEach(
                 function(item) {
                     const btn = document.createElement("button")
                     console.log(item.description)
                     btn.setAttribute("value", item.mapID)
                     btn.setAttribute("title", item.description)
+                    btn.className = "btn btn-primary open-project-button"
                     //btn.setAttribute("onClick", String("this.loadJSONFromFB" + "()"))
                     const id = item.mapID
                     btn.addEventListener("click", function(e) {
                         App.retrieveMapFromFireBase(e.target.value)
+                        myMap.settings.mapIndex = e.target.value // store map Index
                     })
                     btn.innerHTML = item.name
                     maplist.appendChild(btn);
+                    //const str = String("<p>" + item.description + "</p><br>")
+                    //el.insertAdjacentHTML('beforeEnd', str);
                 }
             )
 
@@ -458,6 +486,9 @@ function setupSideBar() {
         closeButton: 'true',
         autoPan: false
     });
+
+
+
     Map.addControl(App.sidebar);
 }
 
