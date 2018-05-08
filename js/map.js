@@ -151,6 +151,7 @@ const App = {
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
         Map.closePopup();
+
         this.selectedFeature = null;
         console.log("toGeo: " + JSON.stringify(this.geoLayer.toGeoJSON()));
         localStorage.setItem("geoJSON", JSON.stringify(this.geoLayer.toGeoJSON()));
@@ -173,7 +174,7 @@ const App = {
         function saveFeatureToFirebase() {
             // current id - id of 1st element in geo Array - I guess
             if (!window.confirm("Save feature to cloud")) {
-                console.log ("save Cancelled!")
+                console.log("save Cancelled!")
                 return;
             }
             const featureIndex = App.selectedLayer._leaflet_id - Object.keys(App.geoLayer._layers)[0] - 1;
@@ -253,13 +254,25 @@ const App = {
                 myControl_div.onclick = function() {
                     console.log("custom control clicked!");
                     App.sidebar.setContent(document.getElementById("settings-template").innerHTML);
+                    //document.getElementById("upload-map-to-firebase").style.display = 'none';
+                    //document.getElementById("upload-map-to-firebase").style.visibility = 'hidden';
+                    // temp fudge - for if no map loaded into geoLayer yet
+                    const savefb = document.getElementById("upload-map-to-firebase")
+                    if ((App.geoLayer === undefined) || (App.geoLayer === null)) {
+                        savefb.style.display = 'none';
+                        console.log(" save display none")
+                    } else {
+                        savefb.style.display = 'block';
+                        console.log(" save display block")
+                    }
+
                     document.getElementById("open-new-project-button").addEventListener("click", function() {
                         loadMyLayer('dummy')
                     });
 
 
                     //loadMyLayer("dummy")
-                    App.sidebar.show();
+                    App.sidebar.show()
                     //alert("Load Shapefile or do something else");
                 }
                 return myControl_div;
