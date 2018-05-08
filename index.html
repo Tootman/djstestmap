@@ -36,14 +36,28 @@
     <script>
     </script>
     <template id="form-template">
-        <p>View and edit the feature</p>
+        <!-- original edit form based on map attributes -->
+        <h4>View and edit the original map data</h4>
+        <p> Use the form below to change the original map data - usually you won't need to use this form - you will want to use the form lower down - add Related data. </p>
         <div id="photo-div"></div>
         <form id="fields-section">
             <!-- form fields inserted here -->
         </form>
-        <button type="submit" id="submit-form" onClick="App.submitForm()" class="btn btn-primary">Save changes</button>
+        <button type="submit" id="submit-form" onClick="App.submitForm()" class="">Save changes back to map</button>
+        <br>
         <hr>
-        <div id="">
+        <h4>Related data </h4>
+        <p>Condition:
+            <input type="text" id="related-data-condition" placeholder="enter one of: 1,2,3,4,5,6, Not found" />
+        </p>
+        <p>Photo:
+            <input type="text" id="related-data-photo" placeholder="{photo} - use the take photo button" />
+        </p>
+        <p>Comments:
+            <input type="text" id="related-data-comments" placeholder="Any comments here" />
+        </p>
+        <button class="btn btn-primary" onclick="RelatedData.submit()"> Submit related Data</button>
+        <div id="related-data-form">
         </div>
     </template>
     <template id="settings-template">

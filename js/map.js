@@ -298,7 +298,7 @@ const App = {
                 App.setupGeoLayer(layerData)
                 App.firebaseHash = snapshot.key
                 document.getElementById('opennewproject').style.display = "none"
-
+                App.sidebar.hide()
             });
         }
     },
@@ -341,17 +341,42 @@ const App = {
     }
 };
 
+const RelatedData = {
+
+    //let featureKey = null
+    submit: function() {
+        // calculate key from OBJECTID + geometrytype
+        this.featureKey = String(App.selectedFeature.properties.OBJECTID + App.selectedFeature.geometry.type)
+
+        App.selectedFeature.geometry.type + "/"
+        console.log("key: " + this.featureKey)
+        this.nodePath = String("App/RelatedData/" + App.firebaseHash + "/" + this.featureKey + "/");
+        console.log("nodePath: " + this.nodePath)
+        const relatedRecord = {}
+        relatedRecord.timestamp = Date()
+        relatedRecord.user = "Default User"
+        relatedRecord.condition = document.getElementById("related-data-condition").value
+        relatedRecord.comments = document.getElementById("related-data-comments").value
+        fbDatabase.ref(this.nodePath).push(
+            relatedRecord
+        );
+
+    }
+}
+
+
 function uploadMapToFirebase() {
     // grab the blobal Mapindex, then send gson layer up to node
     //const nodePath = String("'/App/Maps/" + myMap.settings.mapIndex)
     const nodePath = String("App/Maps/" + App.firebaseHash)
 
+
     fbDatabase.ref(nodePath).set(
         App.geoLayer.toGeoJSON()
     );
-
     console.log("writing to nodePath: " + nodePath)
     console.log("writing data: " + App.geoLayer.toGeoJSON())
+
 }
 
 
