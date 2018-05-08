@@ -147,7 +147,7 @@ const App = {
         let p = App.selectedFeature.properties;
         readSidebarFormProperties(p)
         saveFeatureToFirebase()
-
+        App.selectedLayer.setTooltipContent(p.Asset)
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
         Map.closePopup();
@@ -175,7 +175,6 @@ const App = {
             if (!window.confirm("Save feature to cloud")) {
                 console.log ("save Cancelled!")
                 return;
-                console.log ("save Cancelled!")
             }
             const featureIndex = App.selectedLayer._leaflet_id - Object.keys(App.geoLayer._layers)[0] - 1;
             const nodePath = String("App/Maps/" + App.firebaseHash + "/features")
@@ -329,7 +328,7 @@ const App = {
     }
 };
 
-function uploadChangesToFirebase() {
+function uploadMapToFirebase() {
     // grab the blobal Mapindex, then send gson layer up to node
     //const nodePath = String("'/App/Maps/" + myMap.settings.mapIndex)
     const nodePath = String("App/Maps/" + App.firebaseHash)
