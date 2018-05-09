@@ -74,8 +74,9 @@ const App = {
     whenGeoFeatureClicked: function() {
         function renderSideBar() {
             App.sidebar.setContent(document.getElementById("form-template").innerHTML)
-        }
+            //document.getElementById("take-photo-btn").addEventListener('click', RelatedData.addPhoto());
 
+        }
         let p = App.selectedFeature.properties;
         renderSideBar()
         this.generateFormElements(p)
@@ -271,6 +272,7 @@ const App = {
                     });
 
 
+
                     //loadMyLayer("dummy")
                     App.sidebar.show()
                     //alert("Load Shapefile or do something else");
@@ -356,11 +358,26 @@ const RelatedData = {
         relatedRecord.timestamp = Date()
         relatedRecord.user = "Default User"
         relatedRecord.condition = document.getElementById("related-data-condition").value
-        relatedRecord.comments = document.getElementById("related-data-comments").value
+        if (document.getElementById("related-data-comments").value) {
+            relatedRecord.comments = document.getElementById("related-data-comments").value
+        }
+        if (document.getElementById("related-data-photo").value) {
+            relatedRecord.photo = document.getElementById("related-data-photo").value
+        }
         fbDatabase.ref(this.nodePath).push(
             relatedRecord
-        );
+        ).catch(error => {
+            console.log("My Error: " + error.message)
+            //document.getElementById("message-area").innerHTML="Sorry - "+ error.message
+        });
+        document.getElementById("related-data-info").innerHTML = "Submitted!"
+    },
 
+    addPhoto: function() {
+        const el = document.getElementById("photo-capture")
+        // console.log("photo file: " + this.files[0].name)
+        console.log(el.files[0].name)
+        document.getElementById("related-data-photo").value = el.files[0].name
     }
 }
 
@@ -392,11 +409,16 @@ function loadMyLayer(layerName) {
         retriveMapIndex()
 
         function retriveMapIndex() {
+            document.getElementById("message-area").innerHTML = "<p>waiting for network connection ...</p>"
             fbDatabase.ref('/App/Mapindex').once('value').then(function(snapshot) {
-                console.log(snapshot)
+                document.getElementById("message-area").innerHTML = null
+                console.log("fetched ok: ")
                 const el = document.getElementById("opennewproject")
                 el.insertAdjacentHTML('afterBegin', 'Open project');
                 displayMapIndeces(snapshot)
+            }).catch(error => {
+                console.log("My Error: " + error.message)
+                document.getElementById("message-area").innerHTML = "Sorry - " + error.message
             });
         }
 
