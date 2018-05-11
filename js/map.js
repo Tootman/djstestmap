@@ -593,3 +593,4 @@ Map.on('popupclose', function(e) {
     App.sidebar.hide();
     App.selectedFeature = null;
 });
+
