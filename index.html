@@ -79,8 +79,16 @@
             <button type="" id="upload-map-to-firebase" onClick="uploadMapToFirebase()" class="btn btn-primary">Upload map to firebase</button>
         </p>
         <hr>
-        <h2 class="sidebar-sub-heading">GPS and location </h2>
-        <p> Any gps / location / accuracy settings </p>
+        <h2 class="sidebar-sub-heading">Login </h2>
+        <p id="Login-status-message"> You need to be a registered user to write to the database </p>
+        <div id="login-form">
+            <input type="text" id="emailInput" placeholder="your email" />
+            <br>
+            <input type="text" id="passwordInput" placeholder="your password" />
+            <br>
+        </div>
+        <button id="login-btn" onClick="User().btnLogin()" class="btn btn-primary">Log in</button>
+        <button id="logout-btn" onClick="User().btnLogout()" class="btn btn-primary">Log out</button>
         <hr>
         <h2 class="sidebar-sub-heading">General settings</h2>
         <p>

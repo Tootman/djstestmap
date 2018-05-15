@@ -34,6 +34,9 @@
     <input type="button" value="loadJSONFromFile" onclick="  loadJSONFromFile('ham-green-demo.json')" />
     <input type="button" value="Upload Related Data" onclick="uploadRelatedData()" />
     <input type="button" value="Create New DataRecord" onclick="createNewDataRecord()" />
+    <input type="button" value="login as danieljsimmons@btinternet.com" onclick="btnLogin()" />
+    <input type="button" value="login out" onclick="btnLogout()" />
+    <input type="button" value="Test related data " onclick="testRelatedData()" />
     <div id="users_list"></div>
     <h2 id="">Map list </h2>
     <div id="maplist">
@@ -112,6 +115,50 @@
 
     //loadJSONFromFile("ham-green-demo.json")
 
+    function btnLogin() {
+        const userEmail = ""
+        const pass = ""
+        console.log("note that hard code login has now been removed")
+        firebase.auth().signInWithEmailAndPassword(userEmail, pass)
+            .then(function(user) {
+                console.log(user, "signed in!")
+            })
+            .catch(function(error) {
+                console.log("sorry not signed in Error: " + error)
+
+            });
+    }
+
+
+    function btnLogout() {
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+            console.log("successfully signed out")
+        }, function(error) {
+            // An error happened.
+            console.log("problem signing out - error: ", error)
+        });
+    }
+
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in.
+            var displayName = user.displayName;
+            var email = user.email;
+            var emailVerified = user.emailVerified;
+            var photoURL = user.photoURL;
+            var isAnonymous = user.isAnonymous;
+            var uid = user.uid;
+            var providerData = user.providerData;
+
+            console.log("user status: " + displayName, email, uid, providerData)
+            // ...
+        } else {
+            // User is signed out.
+            // ...
+            console.log("user not signed in")
+        }
+    });
 
 
     function writeData(nodePath) {
@@ -159,7 +206,7 @@
             data.forEach(item) {
                 database.ref(nodePath).push(item)
                 .catch (function (error){
-                	console.log("Error! " + error)
+                    console.log("Error! " + error)
                 })
             }
         }
@@ -174,18 +221,31 @@
     function uploadRelatedData() {
         const nodePath = "App/test/Maps/"
         //myList = pushUpOldestFirst(myList)
+        myList = { timestamp: Date() }
         if (navigator.onLine === true) {
             myList = pushUpOldestFirst(nodePath, myList)
             console.log("navigator online")
+        } else {
+            console.log("sorry offline - try later")
         }
-        else{
-        	console.log("sorry offline - try later")
-        }
-        
+
     }
 
     function onlineStatus(status) {
         AppOnline = true
+    }
+
+
+    function testRelatedData() {
+        const nodePath = "App/test/Maps/djs/"
+        let Ob = {myTimeStamp: Date()}
+        database.ref(nodePath).push(Ob)
+            .then(function() {
+                console.log("ok pushed")
+            })
+            .catch(function(error) {
+                console.log("error in pushing to database: " + error)
+            })
     }
 
 

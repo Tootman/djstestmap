@@ -183,8 +183,14 @@ const App = {
             const Ob = {}
             const myKey = featureIndex
             Ob[myKey] = App.selectedFeature
-            fbDatabase.ref(nodePath).update(Ob);
-            console.log("saved to firebase!")
+            fbDatabase.ref(nodePath).update(Ob)
+                .then(function() {
+                    console.log("saved to firebase!")
+                })
+                .catch(function() {
+                    alert("Sorry - you need to be logged in to do this")
+                })
+
         }
 
     },
@@ -258,6 +264,7 @@ const App = {
                     //document.getElementById("upload-map-to-firebase").style.display = 'none';
                     //document.getElementById("upload-map-to-firebase").style.visibility = 'hidden';
                     // temp fudge - for if no map loaded into geoLayer yet
+                    User().initLoginForm()
                     const savefb = document.getElementById("upload-map-to-firebase")
                     if ((App.geoLayer === undefined) || (App.geoLayer === null)) {
                         savefb.style.display = 'none';
@@ -356,7 +363,7 @@ const RelatedData = {
         console.log("nodePath: " + this.nodePath)
         const relatedRecord = {}
         relatedRecord.timestamp = Date()
-        relatedRecord.user = "Default User"
+        relatedRecord.user = firebase.auth().currentUser.uid
         relatedRecord.condition = document.getElementById("related-data-condition").value
         if (document.getElementById("related-data-comments").value) {
             relatedRecord.comments = document.getElementById("related-data-comments").value
@@ -368,6 +375,7 @@ const RelatedData = {
             relatedRecord
         ).catch(error => {
             console.log("My Error: " + error.message)
+            alert("Sorry - you need to be logged in to do this ")
             //document.getElementById("message-area").innerHTML="Sorry - "+ error.message
         });
         document.getElementById("related-data-info").innerHTML = "Submitted!"
@@ -390,11 +398,91 @@ function uploadMapToFirebase() {
 
     fbDatabase.ref(nodePath).set(
         App.geoLayer.toGeoJSON()
-    );
-    console.log("writing to nodePath: " + nodePath)
-    console.log("writing data: " + App.geoLayer.toGeoJSON())
-
+    ).catch(function(error) {
+        alert("Sorry you need to be logged in to do this")
+    })
 }
+
+const User = function() {
+    const email = document.getElementById("emailInput")
+    const pw = document.getElementById("passwordInput")
+    const msg = document.getElementById("Login-status-message")
+    const loginBtn = document.getElementById("login-btn")
+    const logoutBtn = document.getElementById("logout-btn")
+    const loginForm = document.getElementById("login-form")
+    const auth = firebase.auth
+
+    function signIn() {
+        auth().signInWithEmailAndPassword(email.value, pw.value)
+            .then(function(user) {
+                console.log(user, "signed in!")
+                userSignedIn()
+            })
+            .catch(function(error) {
+                console.log("sorry not signed in Error: " + error)
+
+            });
+    }
+
+    function signOut() {
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+            console.log("successfully signed out")
+            userSignedOut()
+        }, function(error) {
+            // An error happened.
+            console.log("problem signing out - error: ", error)
+        });
+    }
+
+    function userSignedIn() {
+        msg.innerHTML = "you are now signed in!"
+        pw.innerHTML = null
+        loginBtn.style.display = "none"
+        logoutBtn.style.display = "block"
+        loginForm.style.display = "none"
+    }
+
+    function userSignedOut() {
+        msg.innerHTML = "Bye  - you have now signed out"
+        loginBtn.style.display = "block"
+        logoutBtn.style.display = "none"
+        loginForm.style.display = "block"
+    }
+
+    function testFunc() {
+        console.log("testing only!")
+    }
+
+    function testFunc2() {
+        console.log("testing only - func2!")
+    }
+
+
+    function initLoginForm() {
+        console.log("initLoginForm")
+        if (firebase.auth().currentUser) {
+            userSignedIn() 
+            console.log("user is logged in")
+        } else {
+            console.log("user is logged out")
+            userSignedOut()
+        }
+    }
+
+    return {
+        btnLogin: signIn,
+        btnLogout: signOut,
+        btntest: testFunc,
+        initLoginForm: initLoginForm
+    }
+};
+
+
+
+
+
+
 
 
 function loadMyLayer(layerName) {
@@ -593,4 +681,3 @@ Map.on('popupclose', function(e) {
     App.sidebar.hide();
     App.selectedFeature = null;
 });
-
