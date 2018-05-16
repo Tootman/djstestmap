@@ -4,14 +4,21 @@
  - Registered users login - to allow Editing maps and adding related data
   - Two demo maps available 
   - Save Map to Firebase database
-   - Symbology: if 'completed' is false then set symbology to Highlight color, else set to grey
+   - Symbology based on feature property value
    - Related Data
     - - Add Related data to selected feature
-    - - Is user is connected to network then Upload dRelated data to Firebase (using OBJECTID as key)
-    - - Store queue of unSynced modified features, and attempt upload when user next connected to network
+    - - Uploads related data to Firebase, when user is connected to network (using OBJECTID as key), and Store queue of unSynced related data, and attempt upload when user next connected to network (sending in chronological order)
 
-## TODO/  Major bugs ##
+## Bugs and issues ##
 
   - Issue with exporting shapefile polygons to GeoJSON using QGIS - Polygon geometry must now follow RH rule - need to look into - some maps are now broken
    - Navigator location API now not working as expected - GPS not starting 
+
+
+## Todo ##
+ - Import ShapeFile(s)
+  - Export shapeFile(s)
+  - console/ UI for inspecting/viewing related Data,
+  - Exporting Related Spreadsheet 
+  - Populating the source map with set of Related Data and exporting as new shapefile
 
