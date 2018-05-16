@@ -7,12 +7,13 @@
    - Symbology based on feature property value
    - Related Data
     - - Add Related data to selected feature
-    - - Uploads related data to Firebase, when user is connected to network (using OBJECTID as key), and Store queue of unSynced related data, and attempt upload when user next connected to network (sending in chronological order)
+    - - Uploads related data to Firebase (using OBJECTID as key), when user is connected to network, and Stores queue of unSynced related data, when not connected, and attempts upload when next connected (sending in chronological order)
 
 ## Bugs and issues ##
 
   - Issue with exporting shapefile polygons to GeoJSON using QGIS - Polygon geometry must now follow RH rule - need to look into - some maps are now broken
    - Navigator location API now not working as expected - GPS not starting 
+    - Caching of BaseMap tiles not working (using PouchDB)
 
 ##Usage ##
  - Open the settings and select one of the demo maps.
@@ -29,6 +30,8 @@
   - Exporting Related Spreadsheet 
   - Populating the source map with set of Related Data and exporting as new shapefile
    - Add photo to Related Data 
+   - Integrage PWA offline capability into App
+    - Cache of basemap Tiles
 
 ## Notes ##
  - See Google slides for Schematics ,documentation
