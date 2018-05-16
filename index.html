@@ -44,14 +44,16 @@
         <form id="fields-section">
             <!-- form fields inserted here -->
         </form>
-        <button type="submit" id="submit-form" onClick="App.submitForm()" class="">Save changes back to map</button>
-        <br>
-        <hr>
+        <p><button type="submit" id="submit-form" onClick="App.submitForm()" class="">Save changes (to above map form)</button></p>
+       
+        <p>
+         <hr>   
+        </p>
         <h4>Related data </h4>
-        <p>Condition:
+        <p>Current Condition:
             <input type="text" id="related-data-condition" placeholder="enter one of: 1,2,3,4,5,6, Not found" />
         </p>
-        <p>Photo:
+        <p>New photo:
             <input type="text" id="related-data-photo" placeholder="{photo} - use the take photo button" />
         </p>
         <label for="photo-capture" id="take-photo-btn" class="btn btn-primary">take photo</label>
@@ -76,9 +78,9 @@
             </div>
         </section>
         <!-- <button onclick="loadMyLayer('Ham')">Load Ham from local json file</button> -->
-        <p>
-            <button type="" id="upload-map-to-firebase" onClick="uploadMapToFirebase()" class="btn btn-primary">Upload map to firebase</button>
-        </p>
+        <br>
+            <button type="" id="upload-map-to-firebase" onClick="uploadMapToFirebase()" class="btn btn-primary">Upload modified map</button>
+        
         <hr>
         <h2 class="sidebar-sub-heading">Login </h2>
         <p id="Login-status-message"> You need to be a registered user to write to the database </p>

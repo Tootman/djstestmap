@@ -147,7 +147,7 @@ const App = {
     submitForm: function() {
         let p = App.selectedFeature.properties;
         readSidebarFormProperties(p)
-        saveFeatureToFirebase()
+        // saveFeatureToFirebase()
         App.selectedLayer.setTooltipContent(p.Asset)
         App.sidebar.hide();
         this.assignTaskCompletedStyle(this.selectedLayer, p);
@@ -325,7 +325,8 @@ const App = {
                     App.whenGeoFeatureClicked();
                 });
                 //layer.bindPopup("<button> Edit</button>");
-                layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
+                //layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
+                layer.bindTooltip(feature.properties.NAME, { className: 'tool-tip-class' });
 
             },
             style: function(feature) {
