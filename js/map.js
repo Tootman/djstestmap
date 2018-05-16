@@ -305,6 +305,7 @@ const App = {
                 console.log("Node: " + layerData)
                 myMap.myLayerGroup.clearLayers(App.geoLayer)
                 App.setupGeoLayer(layerData)
+                Map.fitBounds(App.geoLayer.getBounds())
                 App.firebaseHash = snapshot.key
                 document.getElementById('opennewproject').style.display = "none"
                 App.sidebar.hide()
