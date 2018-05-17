@@ -25,6 +25,8 @@
     User id:
     <input type="text" name="id" id="user_id" /> User name:
     <input type="text" name="name" id="user_name" />
+    <input type="email" name="email" id="email" />
+    <input type="password" name="password" id="password" />
     <input type="button" value="save" onclick="save_user()" />
     <input type="button" value="update" onclick="update_user()" />
     <input type="button" value="delete" onclick="delete_user()" />
@@ -37,6 +39,7 @@
     <input type="button" value="login" onclick="btnLogin()" />
     <input type="button" value="login out" onclick="btnLogout()" />
     <input type="button" value="Test related data " onclick="testRelatedData()" />
+    <input type="button" value="Fetch once" onclick="fetchOnce()" />
     <div id="users_list"></div>
     <h2 id="">Map list </h2>
     <div id="maplist">
@@ -44,6 +47,7 @@
     <script>
     // Get a reference to the database service
     const database = firebase.database();
+    myOb = {}
 
     // literall writing to db: 
     //database.ref('users/settings').set({ color: 'red', size: 'large' })
@@ -60,10 +64,25 @@
 
     // retriveMapIndex()
 
+    function fetchOnce() {
+        nodePath = "App/RelatedData/-LBlxVOu7-67DEsWi7yP"
+        database.ref(nodePath).once('value')
+            .then(function(snapshot) {
+                console.log("snap: ", snapshot)
+                console.log("snap val: ", snapshot.val())
+                myOb=snapshot.val()
+            }).catch(function(error) {
+                console.log("My Error: " + error.message);
+            })
+    }
+    
+
+
     function retriveMapIndex() {
         database.ref('/App/Mapindex').once('value')
             .then(function(snapshot) {
                 console.log(snapshot)
+                console.log(snapshot.val())
                 displayMapIndeces(snapshot)
             }).catch(function(error) {
                 console.log("My Error: " + error.message);
@@ -116,8 +135,8 @@
     //loadJSONFromFile("ham-green-demo.json")
 
     function btnLogin() {
-        const userEmail = ""
-        const pass = ""
+        const userEmail = document.getElementById('email').value
+        const pass = document.getElementById('password').value
         console.log("note that hard code login has now been removed")
         firebase.auth().signInWithEmailAndPassword(userEmail, pass)
             .then(function(user) {
@@ -238,7 +257,7 @@
 
     function testRelatedData() {
         const nodePath = "App/test/Maps/djs/"
-        let Ob = {myTimeStamp: Date()}
+        let Ob = { myTimeStamp: Date() }
         database.ref(nodePath).push(Ob)
             .then(function() {
                 console.log("ok pushed")
