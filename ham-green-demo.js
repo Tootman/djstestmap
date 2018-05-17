@@ -34,7 +34,8 @@ hamgreendata = {
                 ]
             },
             "properties": {
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "0001"
             }
         },
         {
@@ -48,7 +49,8 @@ hamgreendata = {
             "properties": {
                 "Asset": "Litterbin",
                 "Condition": 3,
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "0001"
 
             }
         },
@@ -68,7 +70,8 @@ hamgreendata = {
                 "myCustomProperty": "my custom value",
                 "instructions": "inspect and check it's clear of debris",
                 "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_105838.jpg",
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "00002"
 
             }
         },
@@ -93,7 +96,8 @@ hamgreendata = {
                 "description": "tarmac",
                 "condition": 4,
                 "width": 0.5,
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "0002"
             }
         },
         {
@@ -109,7 +113,8 @@ hamgreendata = {
                 "description": "welcome, metal",
                 "condition": 1,
                 "instructions": "replace sign",
-                "taskCompleted": false
+                "taskCompleted": true,
+                "OJBECTID": "0003"
             }
         },
         {
@@ -125,7 +130,8 @@ hamgreendata = {
                 "Description": "wooden",
                 "condition": 2,
                 "instructions": "varnsih",
-                "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180220_122300.jpg"
+                "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180220_122300.jpg",
+                "OBJECTID": "0004"
             }
         },
         {
@@ -141,7 +147,8 @@ hamgreendata = {
                 "Description": "wooden",
                 "condition": 4,
                 "photo": "https://geo.danieljsimmons.uk/dan1/PHOTO_20180116_115941.jpg",
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "0004"
             }
         },
         {
@@ -157,7 +164,8 @@ hamgreendata = {
                 "description": "0.1m hole in tarmac",
                 "condition": 1,
                 "instructions": "inspect and fill if necessary",
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "0005"
             }
         },
         {
@@ -178,7 +186,8 @@ hamgreendata = {
                 "description": "brick",
                 "height": 1.5,
                 "condition": 4,
-                "taskCompleted": false
+                "taskCompleted": false,
+                "OBJECTID": "0003"
             }
         }
     ]

@@ -179,7 +179,7 @@ const App = {
                 return;
             }
             const featureIndex = App.selectedLayer._leaflet_id - Object.keys(App.geoLayer._layers)[0] - 1;
-            const nodePath = String("App/Maps/" + App.firebaseHash + "/features")
+            const nodePath = String("App/Maps/" + App.firebaseHash + "/Geo/features")
             const Ob = {}
             const myKey = featureIndex
             Ob[myKey] = App.selectedFeature
@@ -304,7 +304,7 @@ const App = {
                 const layerData = snapshot.val()
                 console.log("Node: " + layerData)
                 myMap.myLayerGroup.clearLayers(App.geoLayer)
-                App.setupGeoLayer(layerData)
+                App.setupGeoLayer(layerData.Geo, layerData.Meta)
                 Map.fitBounds(App.geoLayer.getBounds())
                 App.firebaseHash = snapshot.key
                 document.getElementById('opennewproject').style.display = "none"
@@ -313,8 +313,9 @@ const App = {
         }
     },
 
-    setupGeoLayer: function(myJSONdata) {
+    setupGeoLayer: function(myJSONdata,meta) {
         // 
+        console.log("meta: ", meta)
         App.geoLayer = L.geoJson(myJSONdata, {
             onEachFeature: function(feature, layer) {
                 console.log("clicked: " + feature.properties.Asset);
@@ -326,7 +327,7 @@ const App = {
                 });
                 //layer.bindPopup("<button> Edit</button>");
                 //layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
-                layer.bindTooltip(feature.properties.NAME, { className: 'tool-tip-class' });
+                layer.bindTooltip(feature.properties[meta.LabelProperty], { className: 'tool-tip-class' });
 
             },
             style: function(feature) {
@@ -361,7 +362,7 @@ const RelatedData = {
 
         App.selectedFeature.geometry.type + "/"
         console.log("key: " + this.featureKey)
-        this.nodePath = String("App/RelatedData/" + App.firebaseHash + "/" + this.featureKey + "/");
+        this.nodePath = String("App/Maps/" + App.firebaseHash + "/Related/" + this.featureKey + "/");
         console.log("nodePath: " + this.nodePath)
         const relatedRecord = {}
         relatedRecord.timestamp = Date()
@@ -395,14 +396,15 @@ const RelatedData = {
 function uploadMapToFirebase() {
     // grab the blobal Mapindex, then send gson layer up to node
     //const nodePath = String("'/App/Maps/" + myMap.settings.mapIndex)
-    const nodePath = String("App/Maps/" + App.firebaseHash)
+    const nodePath = String("App/Maps/" + App.firebaseHash + "/Geo")
 
 
     fbDatabase.ref(nodePath).set(
-        App.geoLayer.toGeoJSON()
-    ).catch(function(error) {
-        alert("Sorry you need to be logged in to do this")
-    })
+            App.geoLayer.toGeoJSON()
+        )
+        .catch(function(error) {
+            alert("Sorry you need to be logged in to do this")
+        })
 }
 
 const User = function() {
@@ -464,7 +466,7 @@ const User = function() {
     function initLoginForm() {
         console.log("initLoginForm")
         if (firebase.auth().currentUser) {
-            userSignedIn() 
+            userSignedIn()
             console.log("user is logged in")
         } else {
             console.log("user is logged out")
