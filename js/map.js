@@ -265,6 +265,7 @@ const App = {
                     //document.getElementById("upload-map-to-firebase").style.visibility = 'hidden';
                     // temp fudge - for if no map loaded into geoLayer yet
                     User().initLoginForm()
+
                     const savefb = document.getElementById("upload-map-to-firebase")
                     if ((App.geoLayer === undefined) || (App.geoLayer === null)) {
                         savefb.style.display = 'none';
@@ -272,6 +273,7 @@ const App = {
                     } else {
                         savefb.style.display = 'block';
                         console.log(" save display block")
+                        App.populateMapMeta()
                     }
 
                     document.getElementById("open-new-project-button").addEventListener("click", function() {
@@ -291,6 +293,19 @@ const App = {
         L.control.myControl({
             position: 'bottomright'
         }).addTo(Map);
+    },
+
+    populateMapMeta: function() {
+        const container = document.getElementById("map-info-section")
+        let content = ""
+        for (const item in App.mapMeta) {
+            if ((item !== null) && (item !== undefined)) {
+                console.log("meta attribute: " + item)
+                content+= String (item + ": " + App.mapMeta[item] + "<br>")
+            }
+        }
+        container.innerHTML = content
+        //containter.innerHTML = content
     },
 
     retrieveMapFromFireBase: function(index) {
@@ -313,9 +328,11 @@ const App = {
         }
     },
 
-    setupGeoLayer: function(myJSONdata,meta) {
+    setupGeoLayer: function(myJSONdata, meta) {
         // 
         console.log("meta: ", meta)
+        App.mapMeta = meta
+        //App.mapMeta = myJSONdata.Meta
         App.geoLayer = L.geoJson(myJSONdata, {
             onEachFeature: function(feature, layer) {
                 console.log("clicked: " + feature.properties.Asset);
