@@ -279,9 +279,6 @@ const App = {
                     document.getElementById("open-new-project-button").addEventListener("click", function() {
                         loadMyLayer('dummy')
                     });
-
-
-
                     //loadMyLayer("dummy")
                     App.sidebar.show()
                     //alert("Load Shapefile or do something else");
@@ -301,7 +298,7 @@ const App = {
         for (const item in App.mapMeta) {
             if ((item !== null) && (item !== undefined)) {
                 console.log("meta attribute: " + item)
-                content+= String (item + ": " + App.mapMeta[item] + "<br>")
+                content += String(item + ": " + App.mapMeta[item] + "<br>")
             }
         }
         container.innerHTML = content
@@ -344,7 +341,9 @@ const App = {
                 });
                 //layer.bindPopup("<button> Edit</button>");
                 //layer.bindTooltip(feature.properties.Asset, { className: 'tool-tip-class' });
-                layer.bindTooltip(feature.properties[meta.LabelProperty], { className: 'tool-tip-class' });
+                try {
+                    layer.bindTooltip(feature.properties[meta.LabelProperty], { className: 'tool-tip-class' });
+                } catch { console.log("failed to find prop") }
 
             },
             style: function(feature) {
@@ -440,8 +439,8 @@ const User = function() {
                 userSignedIn()
             })
             .catch(function(error) {
-                console.log("sorry not signed in Error: " + error)
-
+                console.log("sorry couldn't sign in -  Error: " + error)
+                alert ("sorry couldn't sign in -  Error: " + error)
             });
     }
 
@@ -510,7 +509,7 @@ function loadMyLayer(layerName) {
     // just for testing 
     clearMyLayers()
     document.getElementById("open-new-project-button").style.display = "none"
-    //loadFromPresetButtons(layerName)
+    loadFromPresetButtons(layerName)
     // console.log("LoadmyLayer!")
     loadProjectFromFirebase()
 
@@ -564,6 +563,9 @@ function loadMyLayer(layerName) {
             loadOverlayLayer(myMap.settings.demoJSONmapdata)
         } else if (layerName === "Richmond") {
             myMap.settings.demoJSONmapdata = "richmondriverside.json"
+            loadOverlayLayer(myMap.settings.demoJSONmapdata)
+        } else if (layerName === "Richmond-all") {
+            myMap.settings.demoJSONmapdata = "richmond-terr-all.json"
             loadOverlayLayer(myMap.settings.demoJSONmapdata)
         }
     }
