@@ -9,10 +9,20 @@ let myMap = {
                 fillColor: 'grey',
                 color: 'black'
             },
-            taskNotCompleteStyle: {
+            pointTaskNotCompleteStyle: {
                 fillColor: 'red',
                 color: 'red'
-            }
+            },
+            lineTaskNotCompleteStyle: {
+                fillColor: 'red',
+                color: 'red'
+            },
+            polyTaskNotCompleteStyle: {
+                fillColor: 'yellow',
+                color: 'black',
+                weight: 1
+            },
+
         },
         mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         mbUrl: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w',
@@ -27,17 +37,17 @@ let myMap = {
         const greyscaleLayer = L.tileLayer(this.settings.mbUrl, {
             id: 'mapbox.light',
             attribution: myMap.settings.mbAttr,
-            maxZoom: 22
+            maxZoom: 24
         });
         const streetsLayer = L.tileLayer(this.settings.mbUrl, {
             id: 'mapbox.streets',
             attribution: myMap.settings.mbAttr,
-            maxZoom: 22
+            maxZoom: 24
         });
         const satLayer = L.tileLayer(this.settings.mbUrl, {
             id: 'mapbox.satellite',
             attribution: myMap.settings.mbAttr,
-            maxZoom: 22
+            maxZoom: 24
         });
         const myLayerGroup = L.layerGroup();
         this.myLayerGroup = myLayerGroup
@@ -46,7 +56,7 @@ let myMap = {
         const map = L.map('map', {
             center: [51.4384332, -0.3147865],
             zoom: 18,
-            maxZoom: 22,
+            maxZoom: 24,
             layers: [streetsLayer, myLayerGroup] // loads with this layer initially
         });
 
@@ -196,10 +206,17 @@ const App = {
     },
 
     assignTaskCompletedStyle: function(layer, featureProperty) {
+        const s = myMap.settings.symbology
         if (featureProperty.taskCompleted == true) {
-            layer.setStyle(myMap.settings.symbology.taskCompleteStyle);
+            layer.setStyle(s.taskCompleteStyle);
         } else {
-            layer.setStyle(myMap.settings.symbology.taskNotCompleteStyle);
+            if (layer.feature.geometry.type.includes("Poly")) {
+                layer.setStyle(s.polyTaskNotCompleteStyle);
+            } else if (layer.feature.geometry.type.includes("Line")) {
+                layer.setStyle(s.lineTaskNotCompleteStyle);
+            } else if (layer.feature.geometry.type.includes("Point")) {
+                layer.setStyle(s.pointTaskNotCompleteStyle);
+            }
         }
     },
     loadGeoJSONLayer: function(myFile) {
@@ -354,8 +371,8 @@ const App = {
             pointToLayer: function(feature, latlng) {
                 return L.circleMarker(latlng, {
                     radius: 8,
-                    stroke: false,
-                    weight: 2,
+                    stroke: true,
+                    weight: 3,
                     opacity: 1,
                     weight: 4,
                     fillOpacity: 1
@@ -440,7 +457,7 @@ const User = function() {
             })
             .catch(function(error) {
                 console.log("sorry couldn't sign in -  Error: " + error)
-                alert ("sorry couldn't sign in -  Error: " + error)
+                alert("sorry couldn't sign in -  Error: " + error)
             });
     }
 

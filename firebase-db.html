@@ -8,7 +8,7 @@
     <script src="richmondriverside.js"></script>
     <script src="ham-green-demo.js"></script>
     <script src="metajson.js"></script>
-     <script src="js/richmond-4326.js"></script>
+    <script src="js/richmond-4326.js"></script>
     <script>
     // Initialize Firebase
     var config = {
@@ -31,7 +31,7 @@
     <input type="password" name="password" id="password" />
     <input type="button" value="save" onclick="save_user()" />
     <input type="button" value="update" onclick="update_user()" />
-    <input type="button" value="delete" onclick="delete_user()" />
+    <!-- <input type="button" value="delete" onclick="delete_user()" /> -->
     <hr>
     <input type="button" value="retriveMapindex" onclick="retriveMapIndex()" />
     <input type="button" value="uploadMapData" onclick="retriveMapIndex()" />
@@ -42,6 +42,7 @@
     <input type="button" value="login out" onclick="btnLogout()" />
     <input type="button" value="Test related data " onclick="testRelatedData()" />
     <input type="button" value="Fetch once" onclick="fetchOnce()" />
+    <input type="button" value="exportMapWithRelated" onclick="exportMapWithRelated()" />
     <div id="users_list"></div>
     <h2 id="">Map list </h2>
     <div id="maplist">
@@ -66,18 +67,172 @@
 
     // retriveMapIndex()
 
+    function exportMapWithRelated() {
+        //
+        const mapRefPath = "App/Maps/-LBlxVOu7-67DEsWi7yP"
+        let relDataSnap = {}
+        let mapSnap = {}
+        let mapToExport = {}
+        /*
+        const relDataPath = String(mapRefPath + "/Related")
+        relatedData = database.ref(relDataPath).once('value').then(
+            function(snapshot) {
+                relDataSnap = snapshot.val()
+                console.log("path: ", relDataPath)
+                console.log("val: ", relDataSnap)
+
+            }).then(
+            database.ref(mapRefPath).once('value').then(
+                function(snapshot) {
+                    const mapDataSnap = snapshot.val()
+                    console.log("path: ", mapRefPath)
+                    console.log("val: ", mapDataSnap)
+
+                })
+        );
+        */
+        database.ref(mapRefPath).once('value').then(
+            function(snapshot) {
+                mapSnap = snapshot.val()
+                console.log("path: ", mapRefPath)
+                console.log("val: ", mapSnap)
+                
+                //mapToExport.Geo.features = attachRelatedtoFeatures(mapSnap)
+                mapToExport = attachRelatedtoFeatures(mapSnap)
+                console.log("Map to export:", mapToExport)
+            });
+
+        /*  // iterates through each feature  - but some feature may not have relate so wasteful
+        function attachRelatedtoFeatures(mapSnapShot) {
+            const featureSet = mapSnapShot.Geo.features
+            const relatedDataSet = mapSnapShot.Related
+            featureSet.forEach(function(feature) {
+                // console.log(feature.properties['OBJECTID'])
+                objectID = feature.properties['OBJECTID']
+                relDataID = String(objectID + feature.geometry.type)
+                console.log(relDataID)
+                //debugger;
+                relDataSet = relatedDataSet[relDataID]
+                lastRelDataItem = getLastRelDataItem(relDataSet)
+                console.log(lastRelDataItem)
+            })
+        }
+        const  getLastRelDataItem = myRelDataSet=>{
+            const keys = Object.keys(myRelDataSet)
+            const lastDataItem = myRelDataSet[keys(keys.length -1)]
+            console.log("hello from lastRelDataItem:", lastDataItem)
+        }
+        */
+
+        // iterates through each feature  - but some feature may not have relate so wasteful
+        function attachRelatedtoFeatures(mapSnapShot) {
+            // return the snapshot modified with related data added
+            const featureSet = mapSnapShot.Geo.features
+            const related = mapSnapShot.Related
+            //const newMapSnapShot = {} // will include latest related
+            //featureSet.forEach(function(relDataVal,relDataKey) {
+            /*
+            for (relDataSet in related) {
+                //console.log(relDataSubSet, relatedDataSet[relDataSubSet])
+                const rel = 
+                getFeatureForRelData(relDataSet)
+            }
+            */
+            const ObtoRelLookUp = createObIDtoRelIDLookup(featureSet, related)
+            console.log(ObtoRelLookUp)
+            const relKeys = Object.keys(related)
+            relKeys.forEach(function(key) {
+                const lastItem = getLastRelDataItem(related[key])
+                console.log("key: ", key, "value: ", lastItem)
+                // fetch the matching feature
+                const matchingFeature = featureSet[ObtoRelLookUp[key]]
+                console.log("matching feature:", matchingFeature)
+                addNewPropsToFeature(matchingFeature, lastItem)
+            })
+            // console.log(feature.properties['OBJECTID'])
+            //objectID = feature.properties['OBJECTID']
+            //relDataID = String(objectID + feature.geometry.type)
+
+            //console.log(relDataVal,relDataKey)
+            //debugger;
+            //relDataSet = relatedDataSet[relDataID]
+            //lastRelDataItem = getLastRelDataItem(relDataSet)
+            //console.log(lastRelDataItem)
+            return mapSnapShot;
+        }
+
+        /*
+        const getLastRelDataItem = myRelDataSet => {
+            const keys = Object.keys(myRelDataSet)
+            const lastDataItem = myRelDataSet[keys(keys.length - 1)]
+            console.log("hello from lastRelDataItem:", lastDataItem)
+        }
+        */
+
+        const getLastRelDataItem = RelDataSet => {
+            const sortedKeys = Object.keys(RelDataSet).sort()
+            const lastDataItem = RelDataSet[sortedKeys[sortedKeys.length - 1]]
+            //console.log("hello from lastRelDataItem:", lastDataItem)
+            return lastDataItem
+        }
+
+        const addNewPropsToFeature = (feature, relatedPropSet) => {
+            const propSet = Object.keys(relatedPropSet)
+            propSet.forEach(prop => {
+                try {
+                    feature.properties[prop] = relatedPropSet[prop]
+                } catch {
+                    console.log("couldn attach related data for ", prop)
+                }
+            })
+            return feature;
+        }
+
+
+        const getFeatureForRelData = relData => {
+            console.log("from getFeat:", relData)
+
+        }
+        const createObIDtoRelIDLookup = (featureSet, related) => {
+            console.log("hello from lookup")
+            // iterate through the feature set and return a new array 
+
+            //array = []
+            dict = {}
+            featureSet.forEach(function(item, key) {
+                obID = String(item.properties.OBJECTID + item.geometry.type)
+
+                dict[obID] = key
+            })
+            return dict;
+        }
+
+
+    }
+
+
+
+
+
+
+    function getMapGeo(path) {
+
+    }
+
+
+
     function fetchOnce() {
         nodePath = "App/RelatedData/-LBlxVOu7-67DEsWi7yP"
         database.ref(nodePath).once('value')
             .then(function(snapshot) {
                 console.log("snap: ", snapshot)
                 console.log("snap val: ", snapshot.val())
-                myOb=snapshot.val()
+                myOb = snapshot.val()
             }).catch(function(error) {
                 console.log("My Error: " + error.message);
             })
     }
-    
+
 
 
     function retriveMapIndex() {
