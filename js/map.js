@@ -659,7 +659,7 @@ firebase.initializeApp(fireBaseconfig);
 const fbDatabase = firebase.database();
 
 let Map = myMap.setupBaseLayer()
-initDebugControl()
+// initDebugControl()
 App.initSettingsControl()
 L.control.scale().addTo(Map)
 initLogoWatermark()
