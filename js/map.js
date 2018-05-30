@@ -699,31 +699,33 @@ function setupSideBar() {
 // -------------------- GPS location plugin
 function initLocationControl() {
     App.lc = L.control.locate({
-            position: 'topright',
-            strings: {
-                title: "My location (will use GPS if available)"
-            },
-            cacheLocation: false,
-            locateOptions: {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 3000
-                //watch: true
-                //setView: 'Once'
-                // layer: App.myLayerGroup
-            }).addTo(Map);
-    }
+        position: 'topright',
+        strings: {
+            title: "My location (will use GPS if available)"
+        },
+        cacheLocation: false,
+        locateOptions:{
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 3000,
+            //watch: true
+        }
+
+        //setView: 'Once'
+        // layer: App.myLayerGroup
+    }).addTo(Map);
+}
 
 
 
-    Map.on('click', onMapClick);
+Map.on('click', onMapClick);
 
-    function onMapClick(e) {
-        //App.sidebar.hide();
-        console.log(e);
-    };
+function onMapClick(e) {
+    //App.sidebar.hide();
+    console.log(e);
+};
 
-    Map.on('popupclose', function(e) {
-        App.sidebar.hide();
-        App.selectedFeature = null;
-    });
+Map.on('popupclose', function(e) {
+    App.sidebar.hide();
+    App.selectedFeature = null;
+});
