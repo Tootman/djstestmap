@@ -58,8 +58,18 @@
     lc = L.control.locate({
         strings: {
             title: "Show me where I am, yo!"
+        },
+        position: 'topright',
+        cacheLocation: false,
+        locateOptions:{
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 3000,
+            //watch: true
         }
     }).addTo(map);
+    
+
     initDebugControl();
 
     function initDebugControl() {
@@ -68,7 +78,7 @@
         map.on('locationerror', onLocationError);
 
         function onLocationFound(e) {
-            debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
+            debugToMap("type: " + e.type + ", accuracy: " + e.accuracy.toFixed(1) + "<br>");
             console.log("location success");
             console.log(e);
         };
