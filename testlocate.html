@@ -59,18 +59,19 @@
         strings: {
             title: "Show me where I am, yo!"
         },
+        keepCurrentZoomLevel: true,
         position: 'topright',
         cacheLocation: false,
-        locateOptions:{
+        locateOptions: {
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 3000,
+            maximumAge: 3000
             //watch: true
         }
     }).addTo(map);
-    
 
-    initDebugControl();
+
+    //initDebugControl();
 
     function initDebugControl() {
         let debugControl_div;

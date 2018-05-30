@@ -700,6 +700,7 @@ function setupSideBar() {
 function initLocationControl() {
     App.lc = L.control.locate({
         position: 'topright',
+        keepCurrentZoomLevel: true,
         strings: {
             title: "My location (will use GPS if available)"
         },
@@ -707,7 +708,7 @@ function initLocationControl() {
         locateOptions:{
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 3000,
+            maximumAge: 3000
             //watch: true
         }
 
