@@ -40,12 +40,25 @@ document.onreadystatechange = () => {
 
 // retriveMapIndex()
 
+const testExport= ()=>{
+    console.log("test export!")
+    shpwrite.download(polysTest)
+}
+
+
 function exportMapWithRelated() {
     //
-    const mapRefPath = "App/Maps/-LBlxVOu7-67DEsWi7yP"
+    //const mapRefPath = "App/Maps/-LBlxVOu7-67DEsWi7yP"
     let relDataSnap = {}
     let mapSnap = {}
     let mapToExport = {}
+
+
+    const mapID = document.getElementById('map-id').value
+    const mapName = document.getElementById('map-name').value
+
+    const mapRefPath = "App/Maps/" + mapID
+    console.log("MapRefPath: ", mapRefPath)
     /*
     const relDataPath = String(mapRefPath + "/Related")
     relatedData = database.ref(relDataPath).once('value').then(
@@ -72,10 +85,12 @@ function exportMapWithRelated() {
 
             //mapToExport.Geo.features = attachRelatedtoFeatures(mapSnap)
             mapToExport = attachRelatedtoFeatures(mapSnap)
-            //saveShp(mapToExport.Geo)
+            //saveShp(mapToExport.Geo, mapName)
             console.log("Map to export:", mapToExport)
             writeJSONtoFile(mapToExport.Geo)
-        });
+        }).catch(function(error) {
+        console.log("My error: ", error)
+    });
 
     /*  // iterates through each feature  - but some feature may not have relate so wasteful
     function attachRelatedtoFeatures(mapSnapShot) {
@@ -104,6 +119,9 @@ function exportMapWithRelated() {
         // return the snapshot modified with related data added
         const featureSet = mapSnapShot.Geo.features
         const related = mapSnapShot.Related
+        if (related === null || related === undefined) {
+            return mapSnapShot // return straight back as is
+        }
         //const newMapSnapShot = {} // will include latest related
         //featureSet.forEach(function(relDataVal,relDataKey) {
         /*
@@ -114,7 +132,7 @@ function exportMapWithRelated() {
         }
         */
         const ObtoRelLookUp = createObIDtoRelIDLookup(featureSet, related)
-        console.log(ObtoRelLookUp)
+        console.log("ObtoRelLookUp: ", ObtoRelLookUp)
         const relKeys = Object.keys(related)
         relKeys.forEach(function(key) {
             const lastItem = getLastRelDataItem(related[key])
@@ -182,9 +200,19 @@ function exportMapWithRelated() {
         return dict;
     }
 
-    const saveShp = (geoJSON) => {
-        console.log("saveShp GoeJSON:", geoJSON)
-        shpwrite.download(geoJSON)
+    const saveShp = (geoJSON, fileName) => {
+
+        var options = {
+            folder: fileName
+        }
+
+
+        console.log("saveShp GeoJSON:", geoJSON)
+        console.log("filename:", fileName)
+       shpwrite.download(geoJSON)
+       
+       //shpwrite.zip(geoJSON)
+        
     }
 
     const writeJSONtoFile = (geoJSON) => {
@@ -237,12 +265,20 @@ function displayMapIndeces(snapshot) {
         function(item) {
             const btn = document.createElement("button")
             console.log(item.description)
-            btn.setAttribute("value", item.name)
+            btn.setAttribute("value", item.mapID)
             btn.setAttribute("title", item.description)
+            btn.addEventListener("click", e => {
+                setMapId(e)
+            })
             btn.innerHTML = item.name
             maplist.appendChild(btn);
         }
     )
+}
+
+const setMapId = (e) => {
+    document.getElementById('map-id').value = e.target.value
+    document.getElementById('map-name').value = e.target.innerHTML
 }
 
 

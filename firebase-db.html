@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-  
 </head>
 
 <body>
@@ -27,18 +26,30 @@
     <input type="button" value="Test related data " onclick="testRelatedData()" />
     <input type="button" value="Fetch once" onclick="fetchOnce()" />
     <input type="button" value="exportMapWithRelated" onclick="exportMapWithRelated()" />
+    <input type="button" value="test-export" onclick="testExport()" />
+    <br>MapId:
+    <input id="map-id" type="text" name="map-id" value="Not set" readonly>
+    <br>
+    <br>MapId:
+    <input id="map-name" type="text" name="map-name" value="Not set">
+    <br>
     <div id="users_list"></div>
     <h2 id="">Map list </h2>
     <div id="maplist">
     </div>
 </body>
-    <!-- <script src="js/shpwrite.js" /> -->
-    <!-- <script data-main="js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" />  -->
-    <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
-    <script src="richmondriverside.js"></script>
-    <script src="ham-green-demo.js"></script>
-    <script src="metajson.js"></script>
-    <script src="js/richmond-4326.js"></script>
-     <script src="js/firebase-db.js"></script>
-     
+<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
+<script src="richmondriverside.js"></script>
+<script src="ham-green-demo.js"></script>
+<script src="metajson.js"></script>
+<script src="js/richmond-4326.js"></script>
+<script src="js/firebase-db.js"></script>
+<script src="js/poly-forced3.js"></script>
+<!-- <script data-main="js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" />  -->
+<!-- <script src="https://unpkg.com/shp-write@latest/shpwrite.js" /> -->
+<script src="js/shpwrite-mod.js" />
+<script src="js/leaflet.shpfile.js"></script>
+<script src="js/shp.js"></script>
+<script src="js/main.js"></script>
+
 </html>
