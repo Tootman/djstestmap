@@ -29,10 +29,14 @@
     <script src="js/pouchdb.js"></script>
     <script src="js/L.TileLayer.PouchDBCached.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script> -->
-    <script src="js/L.Control.Locate.min.js"></script> -->
-    <script src="js/L.Control.Sidebar.js"></script>
+    <script src="js/L.Control.Locate.min.js"></script> 
+        <script src="js/L.Control.Sidebar.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
     <script src="js/map.js"></script>
+    <script src="js/leaflet.shpfile.js"></script>
+  <script src="js/shp.js"></script>
+   <!-- <script src="js/hatherop.js"></script> -->
+    <script src="ham-green-demo.js"></script>
     <!-- <script src="js/richmond-terr-all.js"></script> -->
     <!-- <script src="js/richmond-4326.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script> -->
@@ -75,16 +79,19 @@
         <button onclick="loadMyLayer('Ham')">Load Ham </button>
         <button onclick="loadMyLayer('Richmond-all')">Load Richmind ALL </button>
     -->
-    
+     
+
         <section id="opennewproject">
             <div id="message-area"></div>
             <button id="open-new-project-button" onclick="" class="btn btn-primary">Open map</button>
             <div id="maplist">
+                <button type="loadHatheropShp" id="" onClick="loadHatheropShp()" class="btn ">load Houndslow shp from local</button>
             </div>
         </section>
         <!-- <button onclick="loadMyLayer('Ham')">Load Ham from local json file</button> -->
         <br>
             <button type="" id="upload-map-to-firebase" onClick="uploadMapToFirebase()" class="btn btn-primary">Upload modified map</button>
+
         
         <hr>
         <h2 class="sidebar-sub-heading">Login </h2>

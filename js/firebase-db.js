@@ -15,6 +15,11 @@ database = firebase.database();
 myOb = {} // after
 
 
+const uploadMapData = (mapID, geoJSON) => {
+    console.log("upload map data!")
+    // eg featuresPath = "App/Maps/-LBlxVOu7-67DEsWi7yP/Geo/features"
+    // database.ref(featurepath).set(geoJSON)
+}
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
@@ -40,9 +45,9 @@ document.onreadystatechange = () => {
 
 // retriveMapIndex()
 
-const testExport= ()=>{
+const testExport = () => {
     console.log("test export!")
-    shpwrite.download(polysTest)
+    shpwrite.download(HAMGREEN)
 }
 
 
@@ -85,7 +90,7 @@ function exportMapWithRelated() {
 
             //mapToExport.Geo.features = attachRelatedtoFeatures(mapSnap)
             mapToExport = attachRelatedtoFeatures(mapSnap)
-            //saveShp(mapToExport.Geo, mapName)
+            saveShp(mapToExport.Geo, mapName)
             console.log("Map to export:", mapToExport)
             writeJSONtoFile(mapToExport.Geo)
         }).catch(function(error) {
@@ -209,10 +214,10 @@ function exportMapWithRelated() {
 
         console.log("saveShp GeoJSON:", geoJSON)
         console.log("filename:", fileName)
-       shpwrite.download(geoJSON)
-       
-       //shpwrite.zip(geoJSON)
-        
+        shpwrite.download(geoJSON)
+
+        //shpwrite.zip(geoJSON)
+
     }
 
     const writeJSONtoFile = (geoJSON) => {

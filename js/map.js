@@ -386,6 +386,12 @@ const App = {
     }
 };
 
+const loadHatheropShp = () => {
+    var shpfile = new L.Shapefile('hounslow-photos-almost-complete.zip');
+    console.log("my shp: ", shpfile)
+    shpfile.addTo(Map);
+}
+
 const RelatedData = {
 
     //let featureKey = null
@@ -705,7 +711,7 @@ function initLocationControl() {
             title: "My location (will use GPS if available)"
         },
         cacheLocation: false,
-        locateOptions:{
+        locateOptions: {
             enableHighAccuracy: true,
             timeout: 10000,
             maximumAge: 3000
@@ -730,3 +736,11 @@ Map.on('popupclose', function(e) {
     App.sidebar.hide();
     App.selectedFeature = null;
 });
+
+
+const loadFromShp = () => {
+
+    var shpLayer = new L.Shapefile('test-park.zip')
+    console.log("shpLayer: ", shpLayer)
+    shpLayer.addTo(Map)
+}
