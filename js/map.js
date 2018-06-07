@@ -386,11 +386,15 @@ const App = {
     }
 };
 
+/*
+var HOUNDLOWLAYER = {}
+
 const loadHatheropShp = () => {
-    var shpfile = new L.Shapefile('hounslow-photos-almost-complete.zip');
-    console.log("my shp: ", shpfile)
-    shpfile.addTo(Map);
+    HOUNDLOWLAYER = new L.Shapefile('hounslow-photos-almost-complete.zip');
+    console.log("my shp: ", HOUNDLOWLAYER)
+    HOUNDLOWLAYER.addTo(Map);
 }
+*/
 
 const RelatedData = {
 

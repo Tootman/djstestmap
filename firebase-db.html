@@ -4,40 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
 </head>
 
 <body>
-    User id:
-    <input type="text" name="id" id="user_id" /> User name:
-    <input type="text" name="name" id="user_name" />
-    <input type="email" name="email" id="email" />
-    <input type="password" name="password" id="password" />
-    <input type="button" value="save" onclick="save_user()" />
-    <input type="button" value="update" onclick="update_user()" />
-    <!-- <input type="button" value="delete" onclick="delete_user()" /> -->
-    <hr>
-    <input type="button" value="retriveMapindex" onclick="retriveMapIndex()" />
-    <input type="button" value="uploadMapFeatureSet" onclick="uploadMapData()" />
-    <input type="button" value="loadJSONFromFile" onclick="  loadJSONFromFile('ham-green-demo.json')" />
-    <input type="button" value="Upload Related Data" onclick="uploadRelatedData()" />
-    <input type="button" value="Create New DataRecord" onclick="createNewDataRecord()" />
-    <input type="button" value="login" onclick="btnLogin()" />
-    <input type="button" value="login out" onclick="btnLogout()" />
-    <input type="button" value="Test related data " onclick="testRelatedData()" />
-    <input type="button" value="Fetch once" onclick="fetchOnce()" />
-    <input type="button" value="exportMapWithRelated" onclick="exportMapWithRelated()" />
-    <input type="button" value="test-export" onclick="testExport()" />
-    <br>MapId:
-    <input id="map-id" type="text" name="map-id" value="Not set" readonly>
-    <br>
-    <br>MapId:
-    <input id="map-name" type="text" name="map-name" value="Not set">
-    <br>
-    <div id="users_list"></div>
-    <h2 id="">Map list </h2>
-    <div id="maplist">
+    <div class="container">
+        <div class="row">
+            <section class="col-md-3 card">
+                <div class="card-header">
+                    <h4>User</h4>
+                </div>
+                <div class="card-body">
+                    <input type="text" name="id" id="user_id" /> User name:
+                    <input type="text" name="name" id="user_name" />
+                    <input type="email" name="email" id="email" />
+                    <input type="password" name="password" id="password" />
+                    <input type="button" value="login" onclick="btnLogin()" />
+                    <input type="button" value="login out" onclick="btnLogout()" />
+                    <input type="button" value="save" onclick="save_user()" />
+                    <input type="button" value="update" onclick="update_user()" />
+                </div>
+            </section>
+            <section class="col-md-3 card">
+                <div class="card-header">
+                    <h4> Utilities </h4>
+                </div>
+                <div class="card-body">
+                    <input type="button" value="uploadMapFeatureSet" onclick="uploadMapData()" />
+                    <input type="button" value="loadJSONFromFile" onclick="  loadJSONFromFile('ham-green-demo.json')" />
+                    <input type="button" value="Upload Related Data" onclick="uploadRelatedData()" />
+                    <input type="button" value="Create New DataRecord" onclick="createNewDataRecord()" />
+                    <input type="button" value="Test related data" onclick="testRelatedData()" />
+                    <input type="button" value="Fetch once" onclick="fetchOnce()" />
+                    <input type="button" value="test-export" onclick="testExport()" />
+                    <input type="button" value="loadHounslow-shp" onclick="loadHounslowShp()" />
+                </div>
+            </section>
+            <section class="col-md-3 card">
+                <div class="card-header">
+                    <h4> Import/Export </h4>
+                </div>
+                <div class="card-body">
+                    <input type="button" value="retriveMapindex" class="btn btn-primary" onclick="retriveMapIndex()" />
+                    <input id="map-id" type="text" name="map-id" value="database map id Not set" readonly>
+                    <br>
+                    <br>Map Label:
+                    <input id="map-name" type="text" name="map-name" value="Not set">
+                    <br>
+                    <div id="users_list"></div>
+                    <h2 id="">Map list </h2>
+                    <div id="maplist">
+                    </div>
+                    <input type="button" id="export-map-with-related" class="btn btn-secondary" value="exportMapWithRelated" onclick="exportMapWithRelated()" />
+                </div>
+            </section>
+        </div>
     </div>
+    <section id= "leaflet-map" style="width:90%; height:500px;">
+    </section>
 </body>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
 <script src="richmondriverside.js"></script>
 <script src="ham-green-demo.js"></script>
@@ -46,13 +73,13 @@
 <script src="js/firebase-db.js"></script>
 <script src="js/hatherop.js"></script>
 <script src="ham-green-demo.js"></script>
-
 <!-- <script data-main="js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" />  -->
 <!-- <script src="https://unpkg.com/shp-write@latest/shpwrite.js" /> -->
 <script src="js/shpwrite-mod.js" />
 <!-- <script src="js/leaflet.shpfile.js"></script> -->
- <script src= "js/encoding-indexes.js" </script> 
- <script src="js/shp.js"></script> 
+<script src="js/encoding-indexes.js"> </script>
+<script src = "js/shp.js" >
+</script>
 <script src="js/main.js"></script>
 
 </html>

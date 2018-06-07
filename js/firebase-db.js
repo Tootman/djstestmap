@@ -15,6 +15,10 @@ database = firebase.database();
 myOb = {} // after
 
 
+// init state of buttons
+document.getElementById('export-map-with-related').disabled = true
+
+
 const uploadMapData = (mapID, geoJSON) => {
     console.log("upload map data!")
     // eg featuresPath = "App/Maps/-LBlxVOu7-67DEsWi7yP/Geo/features"
@@ -28,6 +32,15 @@ document.onreadystatechange = () => {
         console.log("ok ready")
     }
 };
+
+// leaflet map
+
+var leafletMap = L.map('leaflet-map').setView([51.505, -0.09], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(leafletMap);
+
 
 
 // literall writing to db: 
@@ -57,7 +70,6 @@ function exportMapWithRelated() {
     let relDataSnap = {}
     let mapSnap = {}
     let mapToExport = {}
-
 
     const mapID = document.getElementById('map-id').value
     const mapName = document.getElementById('map-name').value
@@ -92,10 +104,16 @@ function exportMapWithRelated() {
             mapToExport = attachRelatedtoFeatures(mapSnap)
             saveShp(mapToExport.Geo, mapName)
             console.log("Map to export:", mapToExport)
-            writeJSONtoFile(mapToExport.Geo)
+            writeJSONtoFile(mapToExport.Geo, mapName)
+            addToLeafletMap(mapToExport.Geo)
         }).catch(function(error) {
         console.log("My error: ", error)
     });
+
+    const addToLeafletMap = (geoJSON) => {
+        L.geoJson(geoJSON).addTo(leafletMap)
+    }
+
 
     /*  // iterates through each feature  - but some feature may not have relate so wasteful
     function attachRelatedtoFeatures(mapSnapShot) {
@@ -207,27 +225,30 @@ function exportMapWithRelated() {
 
     const saveShp = (geoJSON, fileName) => {
 
-        var options = {
-            folder: fileName
+        const options = {
+            folder: String(fileName + "+related"),
+            types: {
+                point: 'Points',
+                polygon: 'Polygons',
+                line: 'Lines'
+            }
         }
-
 
         console.log("saveShp GeoJSON:", geoJSON)
         console.log("filename:", fileName)
-        shpwrite.download(geoJSON)
-
+        shpwrite.download(geoJSON, options)
         //shpwrite.zip(geoJSON)
 
     }
 
-    const writeJSONtoFile = (geoJSON) => {
+    const writeJSONtoFile = (geoJSON, fileName) => {
         const file = new Blob([JSON.stringify(geoJSON)], {
             type: 'application/json'
         })
         const url = URL.createObjectURL(file)
         const a = document.createElement('a')
         a.href = url
-        a.download = "shapefile-download.json"
+        a.download = String(fileName + "+related" + ".json")
         a.click()
     }
 }
@@ -279,11 +300,14 @@ function displayMapIndeces(snapshot) {
             maplist.appendChild(btn);
         }
     )
+
 }
 
 const setMapId = (e) => {
     document.getElementById('map-id').value = e.target.value
     document.getElementById('map-name').value = e.target.innerHTML
+    document.getElementById('export-map-with-related').disabled = false
+
 }
 
 
