@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="css/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="css/L.Control.Sidebar.css" />
     <link rel="stylesheet" href="css/app.css" />
+    
+
 </head>
 
 <body>
@@ -37,6 +39,8 @@
   <script src="js/shp.js"></script>
    <!-- <script src="js/hatherop.js"></script> -->
     <script src="ham-green-demo.js"></script>
+    <!-- <script src="js/leaflet.geometryutil.js"></script> // cant get to work -->
+     <script src="js/leaflet-knn.min.js"></script> 
     <!-- <script src="js/richmond-terr-all.js"></script> -->
     <!-- <script src="js/richmond-4326.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script> -->
@@ -103,7 +107,8 @@
             <br>
         </div>
         <button id="login-btn" onClick="User().btnLogin()" class="btn btn-primary">Log in</button>
-        <button id="logout-btn" onClick="User().btnLogout()" class="btn btn-primary">Log out</button>
+        <button id="logout-btn" onClick="User().btnLogout()" class="btn btn-primary">Log out </button> <br>
+        <button id="find-nearest-btn" onClick="App.findNearestFeatures()" class="btn btn-primary"> Open nearest feature</button>
         <hr>
          <h2 class="sidebar-sub-heading">Map info</h2>
          <div id="map-info-section"></div>

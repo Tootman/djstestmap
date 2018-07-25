@@ -23,18 +23,23 @@ let myMap = {
                 weight: 1
             }
         },
-        mbAttr:
-            'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        mbUrl:
-            "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w",
+
+
+        mbAttr: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        mbUrl: "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGFuc2ltbW9ucyIsImEiOiJjamRsc2NieTEwYmxnMnhsN3J5a3FoZ3F1In0.m0ct-AGSmSX2zaCMbXl0-w",
         //demoJSONmapdata: 'ham-green-demo.json',
         // demoJSONmapdata: 'richmondriverside.json',
-        uploadjsonURL:
-            "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php",
+        uploadjsonURL: "https://geo.danieljsimmons.uk/dan1/upload/uploadjson.php",
         editform: {
             assetConditionOptions: [6, 5, 4, 3, 2, 1, "n/a"]
         }
+
     },
+
+    state: { // Hopefully this is where all data will live, after the app is refactored to be more like React
+        latestLocation: null // lat Lng
+    },
+
     setupBaseLayer: function() {
         const greyscaleLayer = L.tileLayer(this.settings.mbUrl, {
             id: "mapbox.light",
@@ -99,6 +104,21 @@ const App = {
         }
         console.log(" read task completed: " + p.taskCompleted);
         App.sidebar.show();
+    },
+
+    findNearestFeatures: function() {
+
+        
+
+        if (myMap.state.latestLocation)
+
+        {
+            const nearest = leafletKnn(App.geoLayer).nearest(L.latLng(myMap.state.latestLocation), 1) // example usage for Ham Green
+            nearest[0].layer.fire('click')
+
+        } else {
+            window.alert("Sorry - failed - You need to get a GPS location first")
+        }
     },
 
     createFormItem: function(parentTag, el, type, prop, value) {
@@ -229,7 +249,7 @@ const App = {
                 if (response.status !== 200) {
                     console.log(
                         "Looks like there was a problem. Status Code: " +
-                            response.status
+                        response.status
                     );
                     return;
                 }
@@ -263,13 +283,12 @@ const App = {
         // posts to shared hosting
         const url = App.settings.uploadjsonURL;
         fetch(url, {
-            method: "POST", // or 'PUT'
-            body: "name=" + JSON.stringify(this.geoLayer.toGeoJSON()), // data can be `string` or {object}!
-            headers: {
-                "Content-type":
-                    "application/x-www-form-urlencoded; charset=UTF-8"
-            }
-        })
+                method: "POST", // or 'PUT'
+                body: "name=" + JSON.stringify(this.geoLayer.toGeoJSON()), // data can be `string` or {object}!
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            })
             .then(res => {
                 console.log("json sent ok apparently!");
             })
@@ -419,7 +438,7 @@ const RelatedData = {
         // calculate key from OBJECTID + geometrytype
         this.featureKey = String(
             App.selectedFeature.properties.OBJECTID +
-                App.selectedFeature.geometry.type
+            App.selectedFeature.geometry.type
         );
 
         App.selectedFeature.geometry.type + "/";
@@ -590,7 +609,7 @@ function loadMyLayer(layerName) {
 
         function displayMapIndeces(snapshot) {
             const el = document.getElementById("opennewproject");
-            Object.values(snapshot.val()).map(item=>{
+            Object.values(snapshot.val()).map(item => {
                 const btn = document.createElement("button");
                 console.log(item.description);
                 btn.setAttribute("value", item.mapID);
@@ -652,7 +671,7 @@ function initDebugControl() {
     function onLocationFound(e) {
         debugToMap("type: " + e.type + ", accuracy: " + e.accuracy + "<br>");
         console.log("location success");
-        console.log(e);
+        console.log("location found: ", e);
     }
 
     function onLocationError() {
@@ -760,6 +779,18 @@ Map.on("click", onMapClick);
 function onMapClick(e) {
     //App.sidebar.hide();
     console.log(e);
+
+}
+
+Map.on("locationfound", updateLatestLocation)
+
+
+
+
+function updateLatestLocation(e) {
+    console.log("locates location:", e)
+
+    myMap.state.latestLocation = e.latlng
 }
 
 Map.on("popupclose", function(e) {
